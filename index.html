@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#6e32ff">
+  <title>SELL SMART by AITECHPRO</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+  <style>
+    :root {
+      --primary: #6e32ff;
+      --bg: #0a0520;
+      --surface: #1a0b3b;
+      --surface2: #241052;
+      --text: #ffffff;
+      --muted: #a09cb5;
+      --ok: #4ade80;
+      --warn: #fbbf24;
+      --err: #f87171;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); margin: 0; padding-bottom: 78px; }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; position: sticky; top: 0; z-index: 10;
+      background: rgba(10, 5, 32, 0.95); border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    h1 { font-size: 20px; margin: 0; }
+    .sub { font-size: 11px; color: var(--muted); display: flex; gap: 8px; align-items: center; margin-top: 2px; }
+    .pill { font-size: 10px; color: var(--ok); border: 1px solid rgba(74,222,128,0.4); background: rgba(74,222,128,0.12); padding: 2px 8px; border-radius: 99px; }
+    .lang-btn { background: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+    main { padding: 14px; max-width: 680px; margin: 0 auto; }
+    .card { background: var(--surface); border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.07); }
+    .card h2 { margin: 0 0 8px 0; font-size: 16px; }
+    .muted { font-size: 12px; color: var(--muted); }
+    .upload-zone { display: block; text-align: center; padding: 22px; border: 2px dashed var(--primary); border-radius: 12px; cursor: pointer; margin-top: 10px; }
+    .upload-zone input { display: none; }
+    #image-preview { width: 100%; max-height: 260px; object-fit: cover; border-radius: 10px; margin-top: 12px; display: none; }
+    .form-group { margin-bottom: 12px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%; padding: 11px; background: rgba(0,0,0,0.32);
+      border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; color: #fff; font-size: 14px;
+    }
+    .btn {
+      width: 100%; padding: 13px; background: var(--primary); border: none; border-radius: 10px;
+      color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 8px;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: #fff; }
+    .btn-green { background: #16a34a; }
+    .btn-danger { background: transparent; border: 1px solid var(--err); color: var(--err); }
+    .btn-sm { padding: 7px 10px; font-size: 12px; margin-top: 0; width: auto; }
+    .suggestions { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .sugg-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px; border-radius: 8px; background: rgba(110,50,255,0.14);
+      border: 1px solid rgba(110,50,255,0.4); cursor: pointer;
+    }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .chip {
+      padding: 6px 10px; border-radius: 99px; font-size: 12px; cursor: pointer;
+      background: var(--surface2); border: 1px solid rgba(255,255,255,0.1); color: var(--muted);
+    }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .item-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+    .prod-head { display: flex; gap: 12px; align-items: center; }
+    .warn-text { color: var(--warn); font-size: 12px; margin: 6px 0; }
+    nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #0d0826;
+      display: flex; justify-content: space-around; padding: 8px 0;
+      border-top: 1px solid rgba(255,255,255,0.08); z-index: 10;
+    }
+    .nav-item { text-align: center; color: var(--muted); font-size: 11px; cursor: pointer; flex: 1; }
+    .nav-item.active { color: var(--primary); font-weight: 700; }
+    .nav-icon { font-size: 18px; }
+    .hidden { display: none !important; }
+    #toast {
+      position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%);
+      background: #1f1244; border: 1px solid var(--primary); color: #fff;
+      padding: 10px 16px; border-radius: 99px; font-size: 13px; display: none; z-index: 20;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>SELL <span style="color: var(--primary)">SMART</span></h1>
+    <div class="sub">
+      <span>by AITECHPRO</span>
+      <span class="pill" id="lbl-offline-pill">100% Local • Privé</span>
+    </div>
+  </div>
+  <button class="lang-btn" id="btn-lang" onclick="toggleLanguage()">FR</button>
+</header>
+
+<main>
+  <!-- VUE 1 : STUDIO -->
+  <section id="view-studio">
+    <div class="card">
+      <h2 id="lbl-step1">1. Photo & IA locale gratuite</h2>
+      <div class="muted" id="lbl-step1-hint">L'IA suggère l'objet sans envoyer vos données sur un serveur payant.</div>
+      <label class="upload-zone" for="image-input">
+        <div style="font-size:30px;">📸</div>
+        <div id="lbl-pick-photo">Prendre une photo ou choisir dans la galerie</div>
+        <input type="file" id="image-input" accept="image/*" onchange="handleImageUpload(event)">
+      </label>
+      <img id="image-preview" alt="Preview">
+      <button class="btn" id="btn-analyze" disabled onclick="analyzeImage()">🧠 Analyser avec l'IA gratuite</button>
+      <div id="ai-suggestions" class="suggestions"></div>
+    </div>
+
+    <div class="card">
+      <h2 id="lbl-step2">2. Informations réelles du produit</h2>
+      <div class="form-group">
+        <label id="lbl-name">Nom de l'objet *</label>
+        <input type="text" id="in-name" placeholder="Ex: Baskets de course, Veste en jean...">
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label id="lbl-cat">Catégorie</label>
+          <select id="in-cat">
+            <option value="CLOTHING"></option>
+            <option value="SHOES"></option>
+            <option value="ELECTRONICS"></option>
+            <option value="HOME"></option>
+            <option value="SPORTS"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label id="lbl-cond">État</label>
+          <select id="in-cond">
+            <option value="NEW_WITH_TAGS"></option>
+            <option value="LIKE_NEW"></option>
+            <option value="GOOD"></option>
+            <option value="FAIR"></option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label id="lbl-brand">Marque (optionnel)</label>
+          <input type="text" id="in-brand" placeholder="Nike, Apple...">
+        </div>
+        <div class="form-group">
+          <label id="lbl-price">Prix (€)</label>
+          <input type="number" step="0.01" id="in-price" placeholder="25">
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label id="lbl-size">Taille / Modèle (optionnel)</label>
+          <input type="text" id="in-size" placeholder="42, M, 128 Go">
+        </div>
+        <div class="form-group">
+          <label id="lbl-color">Couleur (optionnel)</label>
+          <input type="text" id="in-color">
+        </div>
+      </div>
+      <div class="form-group">
+        <label id="lbl-material">Matière (optionnel)</label>
+        <input type="text" id="in-material">
+      </div>
+      <div class="form-group">
+        <label id="lbl-notes">Défauts / Précisions (optionnel)</label>
+        <textarea id="in-notes" rows="2"></textarea>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label id="lbl-status">Statut</label>
+          <select id="in-status">
+            <option value="DRAFT"></option>
+            <option value="LISTED"></option>
+            <option value="SOLD"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label id="lbl-platform">Plateforme cible</label>
+          <select id="in-platform">
+            <option value="VINTED">Vinted</option>
+            <option value="LEBONCOIN">Leboncoin</option>
+            <option value="EBAY">eBay</option>
+            <option value="DEPOP">Depop</option>
+            <option value="FACEBOOK">Facebook Marketplace</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-outline" id="btn-save-prod" onclick="saveProductOnly()">💾 Enregistrer produit</button>
+        <button class="btn" id="btn-generate" onclick="generateListing()">✨ Générer l'annonce</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="result-card">
+      <h2 id="lbl-step3" style="color:var(--ok);">3. Annonce générée (modifiable)</h2>
+      <div id="ebay-warn" class="warn-text hidden"></div>
+      <div class="form-group">
+        <label id="lbl-res-title">Titre</label>
+        <input type="text" id="res-title">
+      </div>
+      <div class="form-group">
+        <label id="lbl-res-desc">Description</label>
+        <textarea id="res-desc" rows="7"></textarea>
+      </div>
+      <div class="row">
+        <button class="btn btn-outline" id="btn-copy" onclick="copyListing()">📋 Copier</button>
+        <button class="btn btn-green" id="btn-share" onclick="shareListing()">📲 Partager</button>
+      </div>
+      <button class="btn" id="btn-save-all" onclick="saveProductAndHistory()">💾 Sauvegarder produit + historique</button>
+      <button class="btn btn-outline" id="btn-reset" onclick="resetForm()">🔄 Nouveau produit</button>
+    </div>
+  </section>
+
+  <!-- VUE 2 : PRODUITS -->
+  <section id="view-products" class="hidden">
+    <div class="card">
+      <h2 id="lbl-products-title">Mes produits</h2>
+      <div class="form-group">
+        <input type="text" id="search-products" oninput="renderProducts()" placeholder="Rechercher...">
+      </div>
+      <div class="chips" id="cat-filters"></div>
+      <div class="muted" id="products-stats"></div>
+    </div>
+    <div id="products-list"></div>
+  </section>
+
+  <!-- VUE 3 : HISTORIQUE -->
+  <section id="view-history" class="hidden">
+    <div class="card">
+      <h2 id="lbl-history-title">Historique des annonces</h2>
+      <div class="chips" id="platform-filters"></div>
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <!-- VUE 4 : EXPORTS & CONFIDENTIALITÉ -->
+  <section id="view-settings" class="hidden">
+    <div class="card">
+      <h2 id="lbl-export-title">Exports locaux (0 €)</h2>
+      <div class="muted" id="lbl-export-sub">Téléchargez vos produits et votre historique directement sur votre téléphone.</div>
+      <button class="btn" id="btn-exp-csv" onclick="exportData('csv')">⬇️ Exporter en CSV (Excel)</button>
+      <button class="btn btn-outline" id="btn-exp-json" onclick="exportData('json')">⬇️ Exporter en JSON</button>
+      <button class="btn btn-outline" id="btn-exp-md" onclick="exportData('md')">⬇️ Exporter en Markdown (.md)</button>
+    </div>
+    <div class="card">
+      <h2 id="lbl-priv-title">🔒 Confidentialité & Hors-ligne</h2>
+      <ul id="priv-list" class="muted" style="padding-left:18px; line-height:1.6;"></ul>
+    </div>
+    <div class="card">
+      <button class="btn btn-danger" id="btn-clear-all" onclick="clearAllData()">🗑️ Effacer toutes les données locales</button>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <div class="nav-item active" onclick="switchTab('studio', 0)"><div class="nav-icon">✨</div><span id="nav-studio">Studio</span></div>
+  <div class="nav-item" onclick="switchTab('products', 1)"><div class="nav-icon">📦</div><span id="nav-products">Produits</span></div>
+  <div class="nav-item" onclick="switchTab('history', 2)"><div class="nav-icon">📄</div><span id="nav-history">Historique</span></div>
+  <div class="nav-item" onclick="switchTab('settings', 3)"><div class="nav-icon">🔒</div><span id="nav-settings">Export</span></div>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
+  let lang = localStorage.getItem('ss_lang') || 'fr';
+  let editingProductId = null;
+  let currentPhotoDataUrl = '';
+  let prodCatFilter = 'ALL';
+  let histPlatFilter = 'ALL';
+
+  const I18N = {
+    fr: {
+      offlinePill: '100% Local • Privé',
+      step1: '1. Photo & IA locale gratuite',
+      step1Hint: "L'IA gratuite suggère l'objet (fonctionne hors-ligne une fois mise en cache).",
+      pickPhoto: 'Prendre une photo ou choisir dans la galerie',
+      analyze: "🧠 Analyser avec l'IA gratuite",
+      analyzing: '⏳ Analyse locale...',
+      aiUnavailable: "IA hors-ligne non chargée (pas encore en cache). Saisissez le nom ci-dessous.",
+      apply: 'Utiliser',
+      step2: '2. Informations réelles du produit',
+      name: "Nom de l'objet *", cat: 'Catégorie', cond: 'État',
+      brand: 'Marque (optionnel)', price: 'Prix (€)', size: 'Taille / Modèle (optionnel)',
+      color: 'Couleur (optionnel)', material: 'Matière (optionnel)', notes: 'Défauts / Précisions (optionnel)',
+      status: 'Statut', platform: 'Plateforme cible',
+      saveProd: '💾 Enregistrer produit', generate: "✨ Générer l'annonce",
+      step3: '3. Annonce générée (modifiable)', title: 'Titre', desc: 'Description',
+      ebayWarn: 'Titre ajusté à 80 caractères max pour eBay.',
+      copy: '📋 Copier', share: '📲 Partager', saveAll: '💾 Sauvegarder produit + historique',
+      reset: '🔄 Nouveau produit',
+      productsTitle: 'Mes produits', search: 'Rechercher produit, marque...',
+      historyTitle: 'Historique des annonces',
+      exportTitle: 'Exports locaux (0 €)', exportSub: 'Téléchargez vos produits et votre historique directement sur votre téléphone.',
+      expCsv: '⬇️ Exporter en CSV (Excel)', expJson: '⬇️ Exporter en JSON', expMd: '⬇️ Exporter en Markdown (.md)',
+      privTitle: '🔒 Confidentialité & Hors-ligne',
+      privPoints: [
+        'Stockage 100 % local sur votre téléphone (aucun compte requis).',
+        'Aucune API payante ni abonnement (budget strict 0 €).',
+        'Aucune donnée inventée : seuls vos champs saisis sont utilisés.',
+        'Fonctionne hors-ligne grâce au Service Worker PWA.'
+      ],
+      clearAll: '🗑️ Effacer toutes les données locales',
+      confirmClear: 'Supprimer tous les produits et tout l’historique local ?',
+      confirmDel: 'Supprimer cet élément ?',
+      needName: "Veuillez saisir le nom de l'objet.",
+      copied: 'Copié !', saved: 'Enregistré localement !', cleared: 'Données effacées.',
+      all: 'Tous', emptyProd: 'Aucun produit enregistré.', emptyHist: 'Aucune annonce dans l’historique.',
+      edit: 'Modifier', dup: 'Dupliquer', del: 'Supprimer',
+      nav: ['Studio', 'Produits', 'Historique', 'Export'],
+      cats: { CLOTHING: 'Vêtements', SHOES: 'Chaussures', ELECTRONICS: 'Électronique', HOME: 'Maison', SPORTS: 'Sport' },
+      conds: { NEW_WITH_TAGS: 'Neuf avec étiquette', LIKE_NEW: 'Très bon état', GOOD: 'Bon état', FAIR: 'Satisfaisant' },
+      statuses: { DRAFT: 'Brouillon', LISTED: 'En vente', SOLD: 'Vendu' }
+    },
+    en: {
+      offlinePill: '100% Local • Private',
+      step1: '1. Photo & Free Local AI',
+      step1Hint: 'Free AI suggests the item locally (works offline once cached).',
+      pickPhoto: 'Take a photo or choose from gallery',
+      analyze: '🧠 Analyze with free AI',
+      analyzing: '⏳ Analyzing locally...',
+      aiUnavailable: 'Offline AI model not cached yet. Enter the item name below.',
+      apply: 'Use',
+      step2: '2. Factual Product Details',
+      name: 'Item name *', cat: 'Category', cond: 'Condition',
+      brand: 'Brand (optional)', price: 'Price (€)', size: 'Size / Model (optional)',
+      color: 'Color (optional)', material: 'Material (optional)', notes: 'Defects / Notes (optional)',
+      status: 'Status', platform: 'Target platform',
+      saveProd: '💾 Save product', generate: '✨ Generate listing',
+      step3: '3. Generated Listing (editable)', title: 'Title', desc: 'Description',
+      ebayWarn: 'Title trimmed to 80 characters for eBay.',
+      copy: '📋 Copy', share: '📲 Share', saveAll: '💾 Save product + history',
+      reset: '🔄 New product',
+      productsTitle: 'My Products', search: 'Search product, brand...',
+      historyTitle: 'Listing History',
+      exportTitle: 'Local Exports (€0)', exportSub: 'Download your products and listing history directly to your phone.',
+      expCsv: '⬇️ Export as CSV (Excel)', expJson: '⬇️ Export as JSON', expMd: '⬇️ Export as Markdown (.md)',
+      privTitle: '🔒 Privacy & Offline',
+      privPoints: [
+        '100% local storage on your phone (no account required).',
+        'No paid API or subscription (strict €0 budget).',
+        'Zero invented specs: listings only use factual fields you enter.',
+        'Works offline via PWA Service Worker.'
+      ],
+      clearAll: '🗑️ Erase all local data',
+      confirmClear: 'Delete all local products and history?',
+      confirmDel: 'Delete this item?',
+      needName: 'Please enter the item name.',
+      copied: 'Copied!', saved: 'Saved locally!', cleared: 'Local data erased.',
+      all: 'All', emptyProd: 'No products saved yet.', emptyHist: 'No listings in history yet.',
+      edit: 'Edit', dup: 'Duplicate', del: 'Delete',
+      nav: ['Studio', 'Products', 'History', 'Export'],
+      cats: { CLOTHING: 'Clothing', SHOES: 'Footwear', ELECTRONICS: 'Electronics', HOME: 'Home', SPORTS: 'Sports' },
+      conds: { NEW_WITH_TAGS: 'New with tags', LIKE_NEW: 'Very good condition', GOOD: 'Good condition', FAIR: 'Fair condition' },
+      statuses: { DRAFT: 'Draft', LISTED: 'Listed', SOLD: 'Sold' }
+    }
+  };
+
+  const LABEL_RULES = [
+    { keys: ['running shoe', 'sneaker', 'tennis shoe'], fr: 'Baskets / Sneakers', en: 'Sneakers', cat: 'SHOES' },
+    { keys: ['boot', 'sandal', 'shoe', 'loafer'], fr: 'Chaussures', en: 'Shoes', cat: 'SHOES' },
+    { keys: ['jean', 'denim'], fr: 'Jean', en: 'Jeans', cat: 'CLOTHING' },
+    { keys: ['jacket', 'coat', 'trench', 'parka'], fr: 'Veste / Manteau', en: 'Jacket / Coat', cat: 'CLOTHING' },
+    { keys: ['sweatshirt', 'hoodie', 'sweater', 'jersey', 'shirt'], fr: 'Haut / Pull / T-shirt', en: 'Shirt / Sweater', cat: 'CLOTHING' },
+    { keys: ['laptop', 'notebook', 'computer'], fr: 'Ordinateur portable', en: 'Laptop', cat: 'ELECTRONICS' },
+    { keys: ['cellular telephone', 'smartphone', 'iphone'], fr: 'Smartphone', en: 'Smartphone', cat: 'ELECTRONICS' },
+    { keys: ['headphone', 'speaker', 'monitor', 'camera', 'keyboard'], fr: 'Électronique', en: 'Electronics', cat: 'ELECTRONICS' },
+    { keys: ['chair', 'table', 'lamp', 'sofa', 'coffee maker', 'vase'], fr: 'Article maison', en: 'Home item', cat: 'HOME' },
+    { keys: ['bicycle', 'racket', 'ball', 'dumbbell'], fr: 'Équipement sport', en: 'Sports gear', cat: 'SPORTS' }
+  ];
+
+  function getProducts() { return JSON.parse(localStorage.getItem('ss_products') || '[]'); }
+  function setProducts(list) { localStorage.setItem('ss_products', JSON.stringify(list)); }
+  function getHistory() { return JSON.parse(localStorage.getItem('ss_history') || '[]'); }
+  function setHistory(list) { localStorage.setItem('ss_history', JSON.stringify(list)); }
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 2400);
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  }
+
+  function toggleLanguage() {
+    lang = lang === 'fr' ? 'en' : 'fr';
+    localStorage.setItem('ss_lang', lang);
+    applyLanguage();
+  }
+
+  function applyLanguage() {
+    const t = I18N[lang];
+    document.getElementById('btn-lang').textContent = lang.toUpperCase();
+    document.getElementById('lbl-offline-pill').textContent = t.offlinePill;
+    document.getElementById('lbl-step1').textContent = t.step1;
+    document.getElementById('lbl-step1-hint').textContent = t.step1Hint;
+    document.getElementById('lbl-pick-photo').textContent = t.pickPhoto;
+    document.getElementById('btn-analyze').textContent = t.analyze;
+    document.getElementById('lbl-step2').textContent = t.step2;
+    document.getElementById('lbl-name').textContent = t.name;
+    document.getElementById('lbl-cat').textContent = t.cat;
+    document.getElementById('lbl-cond').textContent = t.cond;
+    document.getElementById('lbl-brand').textContent = t.brand;
+    document.getElementById('lbl-price').textContent = t.price;
+    document.getElementById('lbl-size').textContent = t.size;
+    document.getElementById('lbl-color').textContent = t.color;
+    document.getElementById('lbl-material').textContent = t.material;
+    document.getElementById('lbl-notes').textContent = t.notes;
+    document.getElementById('lbl-status').textContent = t.status;
+    document.getElementById('lbl-platform').textContent = t.platform;
+    document.getElementById('btn-save-prod').textContent = t.saveProd;
+    document.getElementById('btn-generate').textContent = t.generate;
+    document.getElementById('lbl-step3').textContent = t.step3;
+    document.getElementById('lbl-res-title').textContent = t.title;
+    document.getElementById('lbl-res-desc').textContent = t.desc;
+    document.getElementById('btn-copy').textContent = t.copy;
+    document.getElementById('btn-share').textContent = t.share;
+    document.getElementById('btn-save-all').textContent = t.saveAll;
+    document.getElementById('btn-reset').textContent = t.reset;
+    document.getElementById('lbl-products-title').textContent = t.productsTitle;
+    document.getElementById('search-products').placeholder = t.search;
+    document.getElementById('lbl-history-title').textContent = t.historyTitle;
+    document.getElementById('lbl-export-title').textContent = t.exportTitle;
+    document.getElementById('lbl-export-sub').textContent = t.exportSub;
+    document.getElementById('btn-exp-csv').textContent = t.expCsv;
+    document.getElementById('btn-exp-json').textContent = t.expJson;
+    document.getElementById('btn-exp-md').textContent = t.expMd;
+    document.getElementById('lbl-priv-title').textContent = t.privTitle;
+    document.getElementById('btn-clear-all').textContent = t.clearAll;
+
+    ['studio','products','history','settings'].forEach((id, i) => {
+      document.getElementById('nav-' + id).textContent = t.nav[i];
+    });
+    Array.from(document.getElementById('in-cat').options).forEach((o) => { o.text = t.cats[o.value]; });
+    Array.from(document.getElementById('in-cond').options).forEach((o) => { o.text = t.conds[o.value]; });
+    Array.from(document.getElementById('in-status').options).forEach((o) => { o.text = t.statuses[o.value]; });
+
+    document.getElementById('priv-list').innerHTML = t.privPoints.map((p) => `<li>${esc(p)}</li>`).join('');
+    renderProducts();
+    renderHistory();
+  }
+
+  function switchTab(tab, idx) {
+    ['studio','products','history','settings'].forEach((name) => {
+      document.getElementById('view-' + name).classList.toggle('hidden', name !== tab);
+    });
+    document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+    if (tab === 'products') renderProducts();
+    if (tab === 'history') renderHistory();
+  }
+
+  function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 640;
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          const ratio = Math.min(maxDim / w, maxDim / h);
+          w = Math.round(w * ratio); h = Math.round(h * ratio);
+        }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        currentPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.78);
+        const prev = document.getElementById('image-preview');
+        prev.src = currentPhotoDataUrl;
+        prev.style.display = 'block';
+        document.getElementById('btn-analyze').disabled = false;
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function analyzeImage() {
+    const t = I18N[lang];
+    const btn = document.getElementById('btn-analyze');
+    const box = document.getElementById('ai-suggestions');
+    btn.disabled = true;
+    btn.textContent = t.analyzing;
+    box.innerHTML = '';
+
+    try {
+      if (typeof mobilenet === 'undefined') throw new Error('offline');
+      const model = await mobilenet.load();
+      const preds = await model.classify(document.getElementById('image-preview'));
+      preds.slice(0, 3).forEach((p) => {
+        const raw = p.className.toLowerCase();
+        const rule = LABEL_RULES.find((r) => r.keys.some((k) => raw.includes(k)));
+        const label = rule ? (lang === 'fr' ? rule.fr : rule.en) : p.className.split(',')[0];
+        const cat = rule ? rule.cat : null;
+        const pct = Math.round(p.probability * 100);
+        const div = document.createElement('div');
+        div.className = 'sugg-item';
+        div.innerHTML = `<span><strong>${esc(label)}</strong> <span class="muted">(${pct}%)</span></span><span style="color:var(--primary);font-weight:700;">${esc(t.apply)}</span>`;
+        div.onclick = () => {
+          document.getElementById('in-name').value = label;
+          if (cat) document.getElementById('in-cat').value = cat;
+          toast(label);
+        };
+        box.appendChild(div);
+      });
+    } catch (_) {
+      box.innerHTML = `<div class="warn-text">${esc(t.aiUnavailable)}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = t.analyze;
+    }
+  }
+
+  function readFormProduct() {
+    return {
+      id: editingProductId || Date.now(),
+      name: document.getElementById('in-name').value.trim(),
+      category: document.getElementById('in-cat').value,
+      condition: document.getElementById('in-cond').value,
+      brand: document.getElementById('in-brand').value.trim(),
+      price: document.getElementById('in-price').value.trim(),
+      size: document.getElementById('in-size').value.trim(),
+      color: document.getElementById('in-color').value.trim(),
+      material: document.getElementById('in-material').value.trim(),
+      notes: document.getElementById('in-notes').value.trim(),
+      status: document.getElementById('in-status').value,
+      photo: currentPhotoDataUrl,
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  function saveProductOnly() {
+    const t = I18N[lang];
+    const p = readFormProduct();
+    if (!p.name) return toast(t.needName);
+    const list = getProducts().filter((x) => x.id !== p.id);
+    list.unshift(p);
+    setProducts(list);
+    editingProductId = p.id;
+    toast(t.saved);
+  }
+
+  function generateListing() {
+    const t = I18N[lang];
+    const p = readFormProduct();
+    if (!p.name) return toast(t.needName);
+    const platform = document.getElementById('in-platform').value;
+    const condTxt = t.conds[p.condition];
+    const catTxt = t.cats[p.category];
+    const isFr = lang === 'fr';
+
+    const titleParts = [p.brand, p.name, p.size, platform !== 'EBAY' ? p.color : ''].filter(Boolean).join(' ');
+    let title = platform === 'EBAY'
+      ? `${[p.brand, p.name, p.size, p.color].filter(Boolean).join(' ')} - ${condTxt}`
+      : (platform === 'VINTED' || platform === 'DEPOP')
+        ? `${titleParts} • ${condTxt}`
+        : `${titleParts} (${condTxt})`;
+
+    const warn = document.getElementById('ebay-warn');
+    if (platform === 'EBAY' && title.length > 80) {
+      title = title.slice(0, 80).trim();
+      warn.textContent = t.ebayWarn;
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+
+    const lines = [];
+    lines.push(isFr ? `Article : ${p.name}` : `Item: ${p.name}`);
+    if (p.brand) lines.push(isFr ? `Marque : ${p.brand}` : `Brand: ${p.brand}`);
+    lines.push(isFr ? `Catégorie : ${catTxt}` : `Category: ${catTxt}`);
+    lines.push(isFr ? `État : ${condTxt}` : `Condition: ${condTxt}`);
+    if (p.size) lines.push(isFr ? `Taille / Modèle : ${p.size}` : `Size / Model: ${p.size}`);
+    if (p.color) lines.push(isFr ? `Couleur : ${p.color}` : `Color: ${p.color}`);
+    if (p.material) lines.push(isFr ? `Matière : ${p.material}` : `Material: ${p.material}`);
+    if (p.price) lines.push(isFr ? `Prix : ${p.price} €` : `Price: €${p.price}`);
+    if (p.notes) lines.push('', isFr ? `Précisions :\n${p.notes}` : `Notes:\n${p.notes}`);
+    lines.push('');
+
+    if (platform === 'VINTED') {
+      const brandTag = p.brand ? ' #' + p.brand.replace(/\s+/g, '') : '';
+      lines.push((isFr ? 'Envoi rapide via la plateforme.' : 'Available for platform shipping.') + ` #Vinted #SecondeMain${brandTag}`);
+    } else if (platform === 'DEPOP') {
+      lines.push((isFr ? 'Message pour toute question.' : 'Message for measurements or questions.') + ' #Depop #SecondHand');
+    } else if (platform === 'EBAY') {
+      lines.push(isFr ? 'Description fidèle aux informations ci-dessus.' : 'Accurately described based on the details above.');
+    } else if (platform === 'LEBONCOIN') {
+      lines.push(isFr ? 'Photos réelles. Contact via messagerie.' : 'Real photos. Message for details.');
+    } else {
+      lines.push(isFr ? 'Disponible tant que visible.' : 'Available while listed.');
+    }
+
+    document.getElementById('res-title').value = title;
+    document.getElementById('res-desc').value = lines.join('\n');
+    document.getElementById('result-card').classList.remove('hidden');
+    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function copyListing() {
+    const txt = document.getElementById('res-title').value + '\n\n' + document.getElementById('res-desc').value;
+    navigator.clipboard.writeText(txt).then(() => toast(I18N[lang].copied));
+  }
+
+  function shareListing() {
+    const title = document.getElementById('res-title').value;
+    const desc = document.getElementById('res-desc').value;
+    if (navigator.share) {
+      navigator.share({ title, text: `${title}\n\n${desc}` }).catch(() => {});
+    } else {
+      copyListing();
+    }
+  }
+
+  function saveProductAndHistory() {
+    saveProductOnly();
+    const h = getHistory();
+    h.unshift({
+      id: Date.now(),
+      platform: document.getElementById('in-platform').value,
+      lang,
+      title: document.getElementById('res-title').value.trim(),
+      desc: document.getElementById('res-desc').value.trim(),
+      date: new Date().toLocaleString()
+    });
+    setHistory(h);
+    toast(I18N[lang].saved);
+  }
+
+  function resetForm() {
+    editingProductId = null;
+    currentPhotoDataUrl = '';
+    ['in-name','in-brand','in-price','in-size','in-color','in-material','in-notes'].forEach((id) => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('image-input').value = '';
+    document.getElementById('image-preview').style.display = 'none';
+    document.getElementById('btn-analyze').disabled = true;
+    document.getElementById('ai-suggestions').innerHTML = '';
+    document.getElementById('result-card').classList.add('hidden');
+  }
+
+  function renderProducts() {
+    const t = I18N[lang];
+    const cats = ['ALL', 'CLOTHING', 'SHOES', 'ELECTRONICS', 'HOME', 'SPORTS'];
+    document.getElementById('cat-filters').innerHTML = cats.map((c) => {
+      const label = c === 'ALL' ? t.all : t.cats[c];
+      return `<span class="chip ${prodCatFilter === c ? 'active' : ''}" onclick="prodCatFilter='${c}';renderProducts();">${esc(label)}</span>`;
+    }).join('');
+
+    const q = (document.getElementById('search-products').value || '').toLowerCase();
+    const list = getProducts().filter((p) => {
+      const matchCat = prodCatFilter === 'ALL' || p.category === prodCatFilter;
+      const matchQ = !q || p.name.toLowerCase().includes(q) || (p.brand || '').toLowerCase().includes(q);
+      return matchCat && matchQ;
+    });
+
+    const total = list.reduce((acc, p) => acc + (parseFloat(p.price) || 0), 0);
+    document.getElementById('products-stats').textContent = `${list.length} • ${total.toFixed(2).replace(/\.00$/, '')} €`;
+
+    const container = document.getElementById('products-list');
+    if (!list.length) {
+      container.innerHTML = `<div class="card muted">${esc(t.emptyProd)}</div>`;
+      return;
+    }
+    container.innerHTML = list.map((p) => `
+      <div class="card">
+        <div class="prod-head">
+          ${p.photo ? `<img class="thumb" src="${p.photo}" alt="">` : ''}
+          <div>
+            <strong>${esc(p.name)}</strong>
+            <div class="muted">${esc([p.brand, t.cats[p.category], p.price ? p.price + ' €' : '', t.statuses[p.status]].filter(Boolean).join(' • '))}</div>
+          </div>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="editProduct(${p.id})">${esc(t.edit)}</button>
+          <button class="btn btn-outline btn-sm" onclick="duplicateProduct(${p.id})">${esc(t.dup)}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">${esc(t.del)}</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function editProduct(id) {
+    const p = getProducts().find((x) => x.id === id);
+    if (!p) return;
+    editingProductId = p.id;
+    document.getElementById('in-name').value = p.name;
+    document.getElementById('in-cat').value = p.category;
+    document.getElementById('in-cond').value = p.condition;
+    document.getElementById('in-brand').value = p.brand || '';
+    document.getElementById('in-price').value = p.price || '';
+    document.getElementById('in-size').value = p.size || '';
+    document.getElementById('in-color').value = p.color || '';
+    document.getElementById('in-material').value = p.material || '';
+    document.getElementById('in-notes').value = p.notes || '';
+    document.getElementById('in-status').value = p.status || 'DRAFT';
+    currentPhotoDataUrl = p.photo || '';
+    const prev = document.getElementById('image-preview');
+    if (currentPhotoDataUrl) {
+      prev.src = currentPhotoDataUrl;
+      prev.style.display = 'block';
+      document.getElementById('btn-analyze').disabled = false;
+    } else {
+      prev.style.display = 'none';
+      document.getElementById('btn-analyze').disabled = true;
+    }
+    switchTab('studio', 0);
+  }
+
+  function duplicateProduct(id) {
+    const list = getProducts();
+    const p = list.find((x) => x.id === id);
+    if (!p) return;
+    list.unshift({ ...p, id: Date.now(), name: p.name + ' (copie)', status: 'DRAFT' });
+    setProducts(list);
+    renderProducts();
+  }
+
+  function deleteProduct(id) {
+    if (!confirm(I18N[lang].confirmDel)) return;
+    setProducts(getProducts().filter((x) => x.id !== id));
+    renderProducts();
+  }
+
+  function renderHistory() {
+    const t = I18N[lang];
+    const plats = ['ALL', 'VINTED', 'LEBONCOIN', 'EBAY', 'DEPOP', 'FACEBOOK'];
+    document.getElementById('platform-filters').innerHTML = plats.map((pl) =>
+      `<span class="chip ${histPlatFilter === pl ? 'active' : ''}" onclick="histPlatFilter='${pl}';renderHistory();">${esc(pl === 'ALL' ? t.all : pl)}</span>`
+    ).join('');
+
+    const list = getHistory().filter((h) => histPlatFilter === 'ALL' || h.platform === histPlatFilter);
+    const container = document.getElementById('history-list');
+    if (!list.length) {
+      container.innerHTML = `<div class="card muted">${esc(t.emptyHist)}</div>`;
+      return;
+    }
+    container.innerHTML = list.map((h) => `
+      <div class="card">
+        <div class="muted">${esc(h.platform)} • ${esc(h.date)}</div>
+        <div style="font-weight:700;margin:6px 0;">${esc(h.title)}</div>
+        <div style="font-size:13px;white-space:pre-wrap;color:#e2e0ec;">${esc(h.desc)}</div>
+        <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="copyHist(${h.id})">${esc(t.copy)}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteHist(${h.id})">${esc(t.del)}</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function copyHist(id) {
+    const h = getHistory().find((x) => x.id === id);
+    if (!h) return;
+    navigator.clipboard.writeText(`${h.title}\n\n${h.desc}`).then(() => toast(I18N[lang].copied));
+  }
+
+  function deleteHist(id) {
+    setHistory(getHistory().filter((x) => x.id !== id));
+    renderHistory();
+  }
+
+  function exportData(fmt) {
+    const products = getProducts().map(({ photo, ...rest }) => rest);
+    const history = getHistory();
+    let content = '', mime = 'text/plain', ext = fmt;
+
+    if (fmt === 'json') {
+      content = JSON.stringify({ app: 'SELL SMART by AITECHPRO', products, history }, null, 2);
+      mime = 'application/json';
+    } else if (fmt === 'csv') {
+      const escCsv = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      const rows = [['Type','Name','Category','Condition','Brand','Price','Status','Title','Description']];
+      products.forEach((p) => rows.push(['PRODUCT', p.name, p.category, p.condition, p.brand, p.price, p.status, '', p.notes]));
+      history.forEach((h) => rows.push(['LISTING', '', '', '', '', '', h.platform, h.title, h.desc]));
+      content = '\uFEFF' + rows.map((r) => r.map(escCsv).join(',')).join('\n');
+      mime = 'text/csv';
+    } else {
+      content = `# SELL SMART by AITECHPRO\n\n## Products (${products.length})\n` +
+        products.map((p) => `- **${p.name}** (${p.brand || '-'}, ${p.price || '-'} €)`).join('\n') +
+        `\n\n## History (${history.length})\n` +
+        history.map((h) => `### [${h.platform}] ${h.title}\n${h.desc}`).join('\n\n---\n\n');
+      mime = 'text/markdown';
+    }
+
+    const blob = new Blob([content], { type: `${mime};charset=utf-8` });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `sellsmart_export.${ext}`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function clearAllData() {
+    if (!confirm(I18N[lang].confirmClear)) return;
+    localStorage.removeItem('ss_products');
+    localStorage.removeItem('ss_history');
+    resetForm();
+    renderProducts();
+    renderHistory();
+    toast(I18N[lang].cleared);
+  }
+
+  applyLanguage();
+</script>
+</body>
+        </html>
