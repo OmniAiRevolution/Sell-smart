@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0520">
+  <title>CGU & Confidentialité — SELL SMART by AITECHPRO</title>
+  <style>
+    :root {
+      --primary: #7c4dff; --bg: #08041a; --surface: #140b2e;
+      --border: rgba(255,255,255,0.08); --text: #f8f7fc; --muted: #b4aec9;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.6; padding-bottom: 40px; }
+    header {
+      position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; background: rgba(8,4,26,0.94); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .btn-back {
+      text-decoration: none; color: #fff; background: var(--primary);
+      padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;
+    }
+    .lang-btn {
+      background: var(--surface); border: 1px solid var(--border); color: #fff;
+      padding: 7px 12px; border-radius: 99px; font-weight: 700; font-size: 12px; cursor: pointer;
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px; margin-bottom: 14px;
+    }
+    h1 { font-size: 20px; margin: 0 0 6px; }
+    h2 { font-size: 16px; color: #b79cff; margin: 0 0 8px; }
+    p, li { font-size: 13.5px; color: var(--muted); margin: 6px 0; }
+    ul { padding-left: 18px; }
+    strong { color: #fff; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="btn-back" href="./index.html" id="btn-back">← Retour à l'app</a>
+  <button class="lang-btn" id="btn-lang" onclick="toggleLang()">FR / EN</button>
+</header>
+
+<main>
+  <!-- VERSION FRANÇAISE (FRANCE / EUROPE - LCEN & RGPD) -->
+  <div id="legal-fr">
+    <div class="card">
+      <h1>Mentions Légales, CGU & Politique de Confidentialité</h1>
+      <p><strong>Application :</strong> SELL SMART by AITECHPRO — Dernière mise à jour : 2026</p>
+    </div>
+
+    <div class="card">
+      <h2>1. Éditeur & Hébergement (France / UE — LCEN)</h2>
+      <p><strong>Éditeur :</strong> AITECHPRO — <strong>[À COMPLÉTER : Nom / Prénom ou Raison sociale]</strong></p>
+      <p><strong>Statut / SIRET (si société) :</strong> [À COMPLÉTER ou "Particulier"]</p>
+      <p><strong>Adresse :</strong> [À COMPLÉTER : Ville, Pays ou siège social]</p>
+      <p><strong>Contact (DPO / Support) :</strong> [À COMPLÉTER : votre-email@exemple.com]</p>
+      <p><strong>Hébergement Web :</strong> GitHub Pages — GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA / GitHub B.V., Prins Bernhardplein 200, Amsterdam, Pays-Bas.</p>
+    </div>
+
+    <div class="card">
+      <h2>2. Confidentialité & RGPD (UE) / CCPA-CPRA (USA)</h2>
+      <ul>
+        <li><strong>Stockage 100 % local :</strong> Vos fiches produits, photos et historiques sont enregistrés uniquement dans la mémoire locale de votre appareil (localStorage / cache navigateur). L'éditeur ne collecte, n'héberge, ne loue et ne vend aucune donnée personnelle (<em>"No Sale or Sharing of Personal Information"</em> au sens du CCPA/CPRA californien).</li>
+        <li><strong>Analyse photo par IA :</strong> L'analyse fonctionne localement sur votre appareil via le modèle open source TensorFlow.js / MobileNet. Vos photos ne sont jamais envoyées vers un serveur d'IA externe. Lors du premier chargement en ligne, votre navigateur télécharge les fichiers techniques du modèle depuis un réseau de diffusion (CDN jsDelivr), qui traite techniquement votre adresse IP le temps du transfert avant mise en cache hors-ligne.</li>
+        <li><strong>Vos droits (RGPD art. 15-20 & CCPA) :</strong> Vous gardez un contrôle total sur vos données via les boutons intégrés <strong>Exporter (CSV / JSON / Markdown)</strong> (droit à la portabilité) et <strong>Effacer toutes les données locales</strong> (droit à l'effacement immédiat).</li>
+        <li><strong>Mineurs (COPPA USA / RGPD UE) :</strong> L'application n'est pas destinée aux enfants de moins de 13 ans (USA) ou 15 ans (France/UE) et ne collecte aucune donnée les concernant.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>3. Conditions Générales d'Utilisation (CGU) & Non-affiliation</h2>
+      <ul>
+        <li><strong>Absence d'affiliation :</strong> SELL SMART by AITECHPRO est un outil indépendant d'aide à la rédaction. Il n'est ni affilié, ni sponsorisé, ni approuvé par <strong>Vinted, eBay, Depop, Leboncoin ou Facebook Marketplace</strong>. Toutes les marques citées appartiennent à leurs propriétaires respectifs.</li>
+        <li><strong>Responsabilité de l'utilisateur :</strong> Les suggestions générées par l'IA ou les modèles de texte sont purement indicatives. Vous êtes seul responsable de vérifier l'exactitude, la légalité, l'authenticité et la conformité des annonces que vous publiez, ainsi que du respect des conditions des plateformes tierces et de vos obligations fiscales.</li>
+        <li><strong>Sauvegardes :</strong> Les données étant locales sur votre appareil, la désinstallation ou le vidage du cache du navigateur peut les supprimer. Pensez à utiliser régulièrement la fonction d'export.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>4. Exclusion de garantie & Limitation de responsabilité (UE / USA)</h2>
+      <p>L'application est fournie gratuitement « en l'état » et « selon disponibilité » (<strong>"AS IS" and "AS AVAILABLE"</strong>), sans aucune garantie expresse ou implicite (notamment de qualité marchande, d'adéquation à un usage particulier ou de résultat de vente).</p>
+      <p>Dans toute la mesure permise par la loi applicable (France, UE et États-Unis), AITECHPRO ne pourra être tenu responsable d'aucun dommage indirect, perte de profit, perte de données locales ou litige survenant sur une plateforme de vente tierce.</p>
+      <p><strong>Droit applicable :</strong> Droit français, sous réserve des dispositions impératives protectrices applicables dans le pays de résidence de l'utilisateur.</p>
+    </div>
+  </div>
+
+  <!-- ENGLISH VERSION (EU GDPR + US CCPA/COPPA/TERMS) -->
+  <div id="legal-en" class="hidden">
+    <div class="card">
+      <h1>Terms of Use, Legal Notice & Privacy Policy</h1>
+      <p><strong>App:</strong> SELL SMART by AITECHPRO — Last updated: 2026</p>
+    </div>
+
+    <div class="card">
+      <h2>1. Publisher & Hosting</h2>
+      <p><strong>Publisher:</strong> AITECHPRO — <strong>[TO COMPLETE: Full Name or Company Name]</strong></p>
+      <p><strong>Registration / ID (if business):</strong> [TO COMPLETE or "Individual"]</p>
+      <p><strong>Address:</strong> [TO COMPLETE: City, Country or Business Address]</p>
+      <p><strong>Contact Email:</strong> [TO COMPLETE: your-email@example.com]</p>
+      <p><strong>Web Host:</strong> GitHub Pages — GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA.</p>
+    </div>
+
+    <div class="card">
+      <h2>2. Privacy Policy (EU GDPR & US CCPA / CPRA / COPPA)</h2>
+      <ul>
+        <li><strong>100% Local Storage:</strong> Product entries, photos, and listing history are stored strictly locally on your device. AITECHPRO does not collect, store, track, sell, or share personal information on remote servers (<em>"No Sale or Sharing of Personal Information"</em> under California CCPA/CPRA).</li>
+        <li><strong>On-Device AI Processing:</strong> Photo suggestions run locally via open-source TensorFlow.js / MobileNet. Your images are never uploaded to third-party AI servers. On first online load, technical script/model files are fetched from a public CDN (jsDelivr) before being cached offline.</li>
+        <li><strong>Your Rights:</strong> You may exercise portability or deletion at any time directly inside the app via <strong>Export (CSV / JSON / Markdown)</strong> and <strong>Erase all local data</strong>.</li>
+        <li><strong>Children (COPPA):</strong> This app is not directed to children under 13 (US) or 15/16 (EU), and no personal data is collected from minors.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>3. Terms of Use & Non-Affiliation</h2>
+      <ul>
+        <li><strong>No Affiliation:</strong> SELL SMART by AITECHPRO is an independent utility. It is not affiliated with, endorsed by, or sponsored by <strong>Vinted, eBay, Depop, Leboncoin, or Facebook Marketplace</strong>. All trademarks belong to their respective owners.</li>
+        <li><strong>User Responsibility:</strong> AI suggestions and templates are assistive only. You are solely responsible for verifying product accuracy, authenticity, pricing, compliance with third-party platform rules, and applicable laws/taxes.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>4. Disclaimer of Warranties & Limitation of Liability (US / EU)</h2>
+      <p>THE APPLICATION IS PROVIDED FREE OF CHARGE ON AN <strong>"AS IS" AND "AS AVAILABLE"</strong> BASIS, WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+      <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, AITECHPRO SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL DAMAGES, LOSS OF PROFITS, OR LOSS OF LOCAL DATA.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  let lang = localStorage.getItem('ss_lang') || 'fr';
+  function renderLang() {
+    document.getElementById('legal-fr').classList.toggle('hidden', lang !== 'fr');
+    document.getElementById('legal-en').classList.toggle('hidden', lang !== 'en');
+    document.getElementById('btn-back').textContent = lang === 'fr' ? '← Retour à l’app' : '← Back to app';
+    document.getElementById('btn-lang').textContent = lang.toUpperCase();
+  }
+  function toggleLang() {
+    lang = lang === 'fr' ? 'en' : 'fr';
+    localStorage.setItem('ss_lang', lang);
+    renderLang();
+  }
+  renderLang();
+</script>
+</body>
+  </html>
