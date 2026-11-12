@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#6e32ff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#08041a">
   <title>SELL SMART by AITECHPRO</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
@@ -11,88 +11,202 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
   <style>
     :root {
-      --primary: #6e32ff;
-      --bg: #0a0520;
-      --surface: #1a0b3b;
-      --surface2: #241052;
-      --text: #ffffff;
-      --muted: #a09cb5;
-      --ok: #4ade80;
+      --primary: #7c4dff;
+      --primary-glow: rgba(124, 77, 255, 0.28);
+      --bg: #08041a;
+      --surface: #140b2e;
+      --surface-2: #1e1242;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f8f7fc;
+      --muted: #9e97b8;
+      --ok: #34d399;
       --warn: #fbbf24;
-      --err: #f87171;
+      --err: #fb7185;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); margin: 0; padding-bottom: 78px; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      overscroll-behavior-y: contain;
+      user-select: none;
+    }
+    input, textarea { user-select: text; }
+    body { padding-bottom: calc(82px + env(safe-area-inset-bottom)); }
+
     header {
+      position: sticky; top: 0; z-index: 20;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 16px; position: sticky; top: 0; z-index: 10;
-      background: rgba(10, 5, 32, 0.95); border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 16px;
+      background: rgba(8, 4, 26, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
-    h1 { font-size: 20px; margin: 0; }
-    .sub { font-size: 11px; color: var(--muted); display: flex; gap: 8px; align-items: center; margin-top: 2px; }
-    .pill { font-size: 10px; color: var(--ok); border: 1px solid rgba(74,222,128,0.4); background: rgba(74,222,128,0.12); padding: 2px 8px; border-radius: 99px; }
-    .lang-btn { background: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-    main { padding: 14px; max-width: 680px; margin: 0 auto; }
-    .card { background: var(--surface); border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.07); }
-    .card h2 { margin: 0 0 8px 0; font-size: 16px; }
-    .muted { font-size: 12px; color: var(--muted); }
-    .upload-zone { display: block; text-align: center; padding: 22px; border: 2px dashed var(--primary); border-radius: 12px; cursor: pointer; margin-top: 10px; }
-    .upload-zone input { display: none; }
-    #image-preview { width: 100%; max-height: 260px; object-fit: cover; border-radius: 10px; margin-top: 12px; display: none; }
-    .form-group { margin-bottom: 12px; }
+    .brand { display: flex; flex-direction: column; gap: 3px; }
+    .brand-title { font-size: 19px; font-weight: 800; letter-spacing: 0.4px; }
+    .brand-title span { color: var(--primary); }
+    .brand-sub { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+    .pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600;
+      color: var(--ok); background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    .lang-btn {
+      background: var(--surface-2); border: 1px solid var(--border); color: #fff;
+      padding: 7px 13px; border-radius: 99px; font-weight: 700; font-size: 12px;
+      cursor: pointer; transition: transform 0.15s var(--ease);
+    }
+    .lang-btn:active { transform: scale(0.93); }
+
+    main { padding: 14px 14px 20px; max-width: 640px; margin: 0 auto; }
+
+    .view-anim { animation: slideFade 0.24s var(--ease); }
+    @keyframes slideFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stepper {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      background: var(--surface); padding: 5px; border-radius: 14px;
+      border: 1px solid var(--border); margin-bottom: 14px;
+    }
+    .step-tab {
+      text-align: center; padding: 9px 4px; border-radius: 10px;
+      font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+    .step-tab.active {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .card {
+      background: var(--surface); border-radius: 18px; padding: 16px;
+      margin-bottom: 14px; border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    }
+    .card-title { font-size: 15px; font-weight: 700; margin: 0 0 4px 0; }
+    .muted { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+    .photo-box {
+      margin-top: 12px; border: 1.5px dashed rgba(124, 77, 255, 0.55);
+      border-radius: 16px; padding: 24px 16px; text-align: center;
+      background: rgba(124, 77, 255, 0.06); cursor: pointer; display: block;
+      transition: transform 0.15s var(--ease), background 0.2s;
+    }
+    .photo-box:active { transform: scale(0.98); background: rgba(124, 77, 255, 0.14); }
+    .photo-box input { display: none; }
+    .photo-icon-wrap {
+      width: 48px; height: 48px; margin: 0 auto 8px; border-radius: 14px;
+      background: rgba(124, 77, 255, 0.18); display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+    }
+    #image-preview {
+      width: 100%; max-height: 250px; object-fit: cover;
+      border-radius: 14px; margin-top: 12px; display: none;
+      border: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 14px; }
+    .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    input, select, textarea {
-      width: 100%; padding: 11px; background: rgba(0,0,0,0.32);
-      border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; color: #fff; font-size: 14px;
+    input, textarea {
+      width: 100%; padding: 12px 13px; border-radius: 12px;
+      background: rgba(0, 0, 0, 0.34); border: 1px solid var(--border);
+      color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s;
     }
+    input:focus, textarea:focus { border-color: var(--primary); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      padding: 8px 12px; border-radius: 99px; font-size: 12px; font-weight: 600;
+      background: var(--surface-2); color: var(--muted);
+      border: 1px solid var(--border); cursor: pointer;
+      transition: all 0.16s var(--ease);
+    }
+    .chip:active { transform: scale(0.95); }
+    .chip.active {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+
     .btn {
-      width: 100%; padding: 13px; background: var(--primary); border: none; border-radius: 10px;
-      color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 8px;
+      width: 100%; padding: 14px 16px; border: none; border-radius: 14px;
+      background: var(--primary); color: #fff; font-weight: 700; font-size: 14px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; margin-top: 8px; text-decoration: none;
+      transition: transform 0.15s var(--ease), opacity 0.2s;
     }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .btn-outline { background: transparent; border: 1px solid var(--primary); color: #fff; }
-    .btn-green { background: #16a34a; }
-    .btn-danger { background: transparent; border: 1px solid var(--err); color: var(--err); }
-    .btn-sm { padding: 7px 10px; font-size: 12px; margin-top: 0; width: auto; }
-    .suggestions { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.42; cursor: not-allowed; transform: none; }
+    .btn-tonal { background: var(--surface-2); border: 1px solid var(--border); color: #fff; }
+    .btn-green { background: #10b981; color: #052e16; }
+    .btn-danger { background: rgba(251, 113, 133, 0.12); border: 1px solid rgba(251, 113, 133, 0.4); color: var(--err); }
+    .btn-sm { width: auto; padding: 8px 12px; font-size: 12px; border-radius: 10px; margin-top: 0; }
+
+    .suggestions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
     .sugg-item {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 10px; border-radius: 8px; background: rgba(110,50,255,0.14);
-      border: 1px solid rgba(110,50,255,0.4); cursor: pointer;
+      padding: 11px 13px; border-radius: 12px;
+      background: rgba(124, 77, 255, 0.12); border: 1px solid rgba(124, 77, 255, 0.38);
+      cursor: pointer; transition: transform 0.15s var(--ease);
     }
-    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-    .chip {
-      padding: 6px 10px; border-radius: 99px; font-size: 12px; cursor: pointer;
-      background: var(--surface2); border: 1px solid rgba(255,255,255,0.1); color: var(--muted);
-    }
-    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .item-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-    .thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+    .sugg-item:active { transform: scale(0.98); }
+
     .prod-head { display: flex; gap: 12px; align-items: center; }
-    .warn-text { color: var(--warn); font-size: 12px; margin: 6px 0; }
-    nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #0d0826;
-      display: flex; justify-content: space-around; padding: 8px 0;
-      border-top: 1px solid rgba(255,255,255,0.08); z-index: 10;
+    .thumb { width: 62px; height: 62px; border-radius: 12px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); }
+    .item-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .warn-text { color: var(--warn); font-size: 12px; margin-top: 8px; }
+    .status-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px;
+      border-radius: 99px; margin-top: 5px; background: rgba(124, 77, 255, 0.2); color: #c4b5fd;
     }
-    .nav-item { text-align: center; color: var(--muted); font-size: 11px; cursor: pointer; flex: 1; }
-    .nav-item.active { color: var(--primary); font-weight: 700; }
-    .nav-icon { font-size: 18px; }
+
+    nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      display: flex; justify-content: space-around; align-items: center;
+      background: rgba(14, 8, 36, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border);
+      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .nav-pill {
+      padding: 4px 16px; border-radius: 99px; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s var(--ease);
+    }
+    .nav-item.active { color: #fff; }
+    .nav-item.active .nav-pill { background: rgba(124, 77, 255, 0.28); color: var(--primary); }
+    .nav-item:active .nav-pill { transform: scale(0.9); }
+
     .hidden { display: none !important; }
+    svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
     #toast {
-      position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%);
-      background: #1f1244; border: 1px solid var(--primary); color: #fff;
-      padding: 10px 16px; border-radius: 99px; font-size: 13px; display: none; z-index: 20;
+      position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%);
+      background: #1f1447; border: 1px solid var(--primary); color: #fff;
+      padding: 10px 18px; border-radius: 99px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45); display: none; z-index: 30;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>SELL <span style="color: var(--primary)">SMART</span></h1>
-    <div class="sub">
+  <div class="brand">
+    <div class="brand-title">SELL <span>SMART</span></div>
+    <div class="brand-sub">
       <span>by AITECHPRO</span>
       <span class="pill" id="lbl-offline-pill">100% Local • Privé</span>
     </div>
@@ -102,167 +216,217 @@
 
 <main>
   <!-- VUE 1 : STUDIO -->
-  <section id="view-studio">
-    <div class="card">
-      <h2 id="lbl-step1">1. Photo & IA locale gratuite</h2>
-      <div class="muted" id="lbl-step1-hint">L'IA suggère l'objet sans envoyer vos données sur un serveur payant.</div>
-      <label class="upload-zone" for="image-input">
-        <div style="font-size:30px;">📸</div>
-        <div id="lbl-pick-photo">Prendre une photo ou choisir dans la galerie</div>
-        <input type="file" id="image-input" accept="image/*" onchange="handleImageUpload(event)">
-      </label>
-      <img id="image-preview" alt="Preview">
-      <button class="btn" id="btn-analyze" disabled onclick="analyzeImage()">🧠 Analyser avec l'IA gratuite</button>
-      <div id="ai-suggestions" class="suggestions"></div>
+  <section id="view-studio" class="view-anim">
+    <div class="stepper">
+      <div class="step-tab active" id="step-tab-1" onclick="setStudioStep(1)">1. Photo &amp; IA</div>
+      <div class="step-tab" id="step-tab-2" onclick="setStudioStep(2)">2. Détails</div>
+      <div class="step-tab" id="step-tab-3" onclick="setStudioStep(3)">3. Annonce</div>
     </div>
 
-    <div class="card">
-      <h2 id="lbl-step2">2. Informations réelles du produit</h2>
-      <div class="form-group">
-        <label id="lbl-name">Nom de l'objet *</label>
-        <input type="text" id="in-name" placeholder="Ex: Baskets de course, Veste en jean...">
+    <!-- ÉTAPE 1 -->
+    <div id="studio-step-1" class="view-anim">
+      <div class="card">
+        <div class="card-title" id="lbl-step1">Photo &amp; IA locale gratuite</div>
+        <div class="muted" id="lbl-step1-hint">L'IA suggère l'objet sans envoyer vos photos sur un serveur payant.</div>
+
+        <label class="photo-box" for="image-input">
+          <div class="photo-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <div style="font-weight:600; font-size:14px;" id="lbl-pick-photo">Prendre une photo ou ouvrir la galerie</div>
+          <input type="file" id="image-input" accept="image/*" onchange="handleImageUpload(event)">
+        </label>
+
+        <img id="image-preview" alt="Preview">
+
+        <button class="btn" id="btn-analyze" disabled onclick="analyzeImage()">
+          <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-5.1 3.7L16.8 20 12 16.5 7.2 20l1.9-5.6L4 10.7l6.1-1.9z"/></svg>
+          <span id="txt-analyze">Analyser avec l'IA gratuite</span>
+        </button>
+
+        <div id="ai-suggestions" class="suggestions"></div>
       </div>
-      <div class="row">
-        <div class="form-group">
-          <label id="lbl-cat">Catégorie</label>
-          <select id="in-cat">
-            <option value="CLOTHING"></option>
-            <option value="SHOES"></option>
-            <option value="ELECTRONICS"></option>
-            <option value="HOME"></option>
-            <option value="SPORTS"></option>
-          </select>
+
+      <button class="btn btn-tonal" onclick="setStudioStep(2)">
+        <span id="txt-next-details">Continuer vers les détails</span>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <!-- ÉTAPE 2 -->
+    <div id="studio-step-2" class="view-anim hidden">
+      <div class="card">
+        <div class="card-title" id="lbl-step2">Informations réelles du produit</div>
+
+        <div class="field" style="margin-top:12px;">
+          <label class="field-label" id="lbl-name">Nom de l'objet *</label>
+          <input type="text" id="in-name" placeholder="Ex: Baskets de course, Veste en jean...">
         </div>
-        <div class="form-group">
-          <label id="lbl-cond">État</label>
-          <select id="in-cond">
-            <option value="NEW_WITH_TAGS"></option>
-            <option value="LIKE_NEW"></option>
-            <option value="GOOD"></option>
-            <option value="FAIR"></option>
-          </select>
+
+        <div class="field">
+          <label class="field-label" id="lbl-cat">Catégorie</label>
+          <div class="chips" id="cat-chips"></div>
         </div>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label id="lbl-brand">Marque (optionnel)</label>
-          <input type="text" id="in-brand" placeholder="Nike, Apple...">
+
+        <div class="field">
+          <label class="field-label" id="lbl-cond">État</label>
+          <div class="chips" id="cond-chips"></div>
         </div>
-        <div class="form-group">
-          <label id="lbl-price">Prix (€)</label>
-          <input type="number" step="0.01" id="in-price" placeholder="25">
+
+        <div class="row">
+          <div class="field">
+            <label class="field-label" id="lbl-brand">Marque (optionnel)</label>
+            <input type="text" id="in-brand" placeholder="Nike, Apple...">
+          </div>
+          <div class="field">
+            <label class="field-label" id="lbl-price">Prix (€)</label>
+            <input type="number" step="0.01" id="in-price" placeholder="25">
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label id="lbl-size">Taille / Modèle (optionnel)</label>
-          <input type="text" id="in-size" placeholder="42, M, 128 Go">
+
+        <div class="row">
+          <div class="field">
+            <label class="field-label" id="lbl-size">Taille / Modèle</label>
+            <input type="text" id="in-size" placeholder="42, M, 128 Go">
+          </div>
+          <div class="field">
+            <label class="field-label" id="lbl-color">Couleur</label>
+            <input type="text" id="in-color">
+          </div>
         </div>
-        <div class="form-group">
-          <label id="lbl-color">Couleur (optionnel)</label>
-          <input type="text" id="in-color">
+
+        <div class="field">
+          <label class="field-label" id="lbl-material">Matière (optionnel)</label>
+          <input type="text" id="in-material">
         </div>
-      </div>
-      <div class="form-group">
-        <label id="lbl-material">Matière (optionnel)</label>
-        <input type="text" id="in-material">
-      </div>
-      <div class="form-group">
-        <label id="lbl-notes">Défauts / Précisions (optionnel)</label>
-        <textarea id="in-notes" rows="2"></textarea>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label id="lbl-status">Statut</label>
-          <select id="in-status">
-            <option value="DRAFT"></option>
-            <option value="LISTED"></option>
-            <option value="SOLD"></option>
-          </select>
+
+        <div class="field">
+          <label class="field-label" id="lbl-notes">Défauts / Précisions (optionnel)</label>
+          <textarea id="in-notes" rows="2"></textarea>
         </div>
-        <div class="form-group">
-          <label id="lbl-platform">Plateforme cible</label>
-          <select id="in-platform">
-            <option value="VINTED">Vinted</option>
-            <option value="LEBONCOIN">Leboncoin</option>
-            <option value="EBAY">eBay</option>
-            <option value="DEPOP">Depop</option>
-            <option value="FACEBOOK">Facebook Marketplace</option>
-          </select>
+
+        <div class="field">
+          <label class="field-label" id="lbl-status">Statut</label>
+          <div class="chips" id="status-chips"></div>
         </div>
-      </div>
-      <div class="row">
-        <button class="btn btn-outline" id="btn-save-prod" onclick="saveProductOnly()">💾 Enregistrer produit</button>
-        <button class="btn" id="btn-generate" onclick="generateListing()">✨ Générer l'annonce</button>
+
+        <div class="field">
+          <label class="field-label" id="lbl-platform">Plateforme cible</label>
+          <div class="chips" id="plat-chips"></div>
+        </div>
+
+        <div class="row">
+          <button class="btn btn-tonal" onclick="saveProductOnly()">
+            <span id="txt-save-prod">Enregistrer</span>
+          </button>
+          <button class="btn" onclick="generateListing()">
+            <span id="txt-generate">Générer l'annonce</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="card hidden" id="result-card">
-      <h2 id="lbl-step3" style="color:var(--ok);">3. Annonce générée (modifiable)</h2>
-      <div id="ebay-warn" class="warn-text hidden"></div>
-      <div class="form-group">
-        <label id="lbl-res-title">Titre</label>
-        <input type="text" id="res-title">
+    <!-- ÉTAPE 3 -->
+    <div id="studio-step-3" class="view-anim hidden">
+      <div class="card">
+        <div class="card-title" style="color:var(--ok);" id="lbl-step3">Annonce prête (modifiable)</div>
+        <div id="ebay-warn" class="warn-text hidden"></div>
+
+        <div class="field" style="margin-top:12px;">
+          <label class="field-label" id="lbl-res-title">Titre</label>
+          <input type="text" id="res-title">
+        </div>
+
+        <div class="field">
+          <label class="field-label" id="lbl-res-desc">Description</label>
+          <textarea id="res-desc" rows="8"></textarea>
+        </div>
+
+        <div class="row">
+          <button class="btn btn-tonal" onclick="copyListing()">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="txt-copy">Copier</span>
+          </button>
+          <button class="btn btn-green" onclick="shareListing()">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span id="txt-share">Partager</span>
+          </button>
+        </div>
+
+        <button class="btn" onclick="saveProductAndHistory()">
+          <span id="txt-save-all">Sauvegarder produit + historique</span>
+        </button>
+        <button class="btn btn-tonal" onclick="resetForm()">
+          <span id="txt-reset">Nouveau produit</span>
+        </button>
       </div>
-      <div class="form-group">
-        <label id="lbl-res-desc">Description</label>
-        <textarea id="res-desc" rows="7"></textarea>
-      </div>
-      <div class="row">
-        <button class="btn btn-outline" id="btn-copy" onclick="copyListing()">📋 Copier</button>
-        <button class="btn btn-green" id="btn-share" onclick="shareListing()">📲 Partager</button>
-      </div>
-      <button class="btn" id="btn-save-all" onclick="saveProductAndHistory()">💾 Sauvegarder produit + historique</button>
-      <button class="btn btn-outline" id="btn-reset" onclick="resetForm()">🔄 Nouveau produit</button>
     </div>
   </section>
 
   <!-- VUE 2 : PRODUITS -->
-  <section id="view-products" class="hidden">
+  <section id="view-products" class="view-anim hidden">
     <div class="card">
-      <h2 id="lbl-products-title">Mes produits</h2>
-      <div class="form-group">
+      <div class="card-title" id="lbl-products-title">Mes produits</div>
+      <div class="field" style="margin-top:10px;">
         <input type="text" id="search-products" oninput="renderProducts()" placeholder="Rechercher...">
       </div>
       <div class="chips" id="cat-filters"></div>
-      <div class="muted" id="products-stats"></div>
+      <div class="muted" id="products-stats" style="margin-top:8px;"></div>
     </div>
     <div id="products-list"></div>
   </section>
 
   <!-- VUE 3 : HISTORIQUE -->
-  <section id="view-history" class="hidden">
+  <section id="view-history" class="view-anim hidden">
     <div class="card">
-      <h2 id="lbl-history-title">Historique des annonces</h2>
-      <div class="chips" id="platform-filters"></div>
+      <div class="card-title" id="lbl-history-title">Historique des annonces</div>
+      <div class="chips" id="platform-filters" style="margin-top:10px;"></div>
     </div>
     <div id="history-list"></div>
   </section>
 
   <!-- VUE 4 : EXPORTS & CONFIDENTIALITÉ -->
-  <section id="view-settings" class="hidden">
+  <section id="view-settings" class="view-anim hidden">
     <div class="card">
-      <h2 id="lbl-export-title">Exports locaux (0 €)</h2>
+      <div class="card-title" id="lbl-export-title">Exports locaux (0 €)</div>
       <div class="muted" id="lbl-export-sub">Téléchargez vos produits et votre historique directement sur votre téléphone.</div>
-      <button class="btn" id="btn-exp-csv" onclick="exportData('csv')">⬇️ Exporter en CSV (Excel)</button>
-      <button class="btn btn-outline" id="btn-exp-json" onclick="exportData('json')">⬇️ Exporter en JSON</button>
-      <button class="btn btn-outline" id="btn-exp-md" onclick="exportData('md')">⬇️ Exporter en Markdown (.md)</button>
+      <button class="btn" id="btn-exp-csv" onclick="exportData('csv')">Exporter en CSV (Excel)</button>
+      <button class="btn btn-tonal" id="btn-exp-json" onclick="exportData('json')">Exporter en JSON</button>
+      <button class="btn btn-tonal" id="btn-exp-md" onclick="exportData('md')">Exporter en Markdown (.md)</button>
     </div>
+
     <div class="card">
-      <h2 id="lbl-priv-title">🔒 Confidentialité & Hors-ligne</h2>
-      <ul id="priv-list" class="muted" style="padding-left:18px; line-height:1.6;"></ul>
+      <div class="card-title" id="lbl-priv-title">Confidentialité, CGU &amp; Hors-ligne</div>
+      <ul id="priv-list" class="muted" style="padding-left:18px; line-height:1.6; margin-top:8px;"></ul>
+      <a class="btn btn-tonal" href="./legal.html" style="margin-top:12px;">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span id="txt-legal-btn">CGU, Mentions légales &amp; RGPD / USA</span>
+      </a>
     </div>
+
     <div class="card">
-      <button class="btn btn-danger" id="btn-clear-all" onclick="clearAllData()">🗑️ Effacer toutes les données locales</button>
+      <button class="btn btn-danger" id="btn-clear-all" onclick="clearAllData()">Effacer toutes les données locales</button>
     </div>
   </section>
 </main>
 
 <nav>
-  <div class="nav-item active" onclick="switchTab('studio', 0)"><div class="nav-icon">✨</div><span id="nav-studio">Studio</span></div>
-  <div class="nav-item" onclick="switchTab('products', 1)"><div class="nav-icon">📦</div><span id="nav-products">Produits</span></div>
-  <div class="nav-item" onclick="switchTab('history', 2)"><div class="nav-icon">📄</div><span id="nav-history">Historique</span></div>
-  <div class="nav-item" onclick="switchTab('settings', 3)"><div class="nav-icon">🔒</div><span id="nav-settings">Export</span></div>
+  <div class="nav-item active" onclick="switchTab('studio', 0)">
+    <div class="nav-pill"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-5.1 3.7L16.8 20 12 16.5 7.2 20l1.9-5.6L4 10.7l6.1-1.9z"/></svg></div>
+    <span id="nav-studio">Studio</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('products', 1)">
+    <div class="nav-pill"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+    <span id="nav-products">Produits</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('history', 2)">
+    <div class="nav-pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <span id="nav-history">Historique</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('settings', 3)">
+    <div class="nav-pill"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <span id="nav-settings">Export</span>
+  </div>
 </nav>
 
 <div id="toast"></div>
@@ -277,41 +441,48 @@
   let lang = localStorage.getItem('ss_lang') || 'fr';
   let editingProductId = null;
   let currentPhotoDataUrl = '';
+  let selectedCat = 'CLOTHING';
+  let selectedCond = 'LIKE_NEW';
+  let selectedStatus = 'DRAFT';
+  let selectedPlatform = 'VINTED';
   let prodCatFilter = 'ALL';
   let histPlatFilter = 'ALL';
 
   const I18N = {
     fr: {
       offlinePill: '100% Local • Privé',
-      step1: '1. Photo & IA locale gratuite',
-      step1Hint: "L'IA gratuite suggère l'objet (fonctionne hors-ligne une fois mise en cache).",
-      pickPhoto: 'Prendre une photo ou choisir dans la galerie',
-      analyze: "🧠 Analyser avec l'IA gratuite",
-      analyzing: '⏳ Analyse locale...',
-      aiUnavailable: "IA hors-ligne non chargée (pas encore en cache). Saisissez le nom ci-dessous.",
+      tabs: ['1. Photo & IA', '2. Détails', '3. Annonce'],
+      step1: 'Photo & IA locale gratuite',
+      step1Hint: "L'IA suggère l'objet localement (hors-ligne une fois mis en cache).",
+      pickPhoto: 'Prendre une photo ou ouvrir la galerie',
+      analyze: "Analyser avec l'IA gratuite",
+      analyzing: 'Analyse locale...',
+      nextDetails: 'Continuer vers les détails',
+      aiUnavailable: 'IA hors-ligne non en cache. Saisissez le nom dans Détails.',
       apply: 'Utiliser',
-      step2: '2. Informations réelles du produit',
+      step2: 'Informations réelles du produit',
       name: "Nom de l'objet *", cat: 'Catégorie', cond: 'État',
-      brand: 'Marque (optionnel)', price: 'Prix (€)', size: 'Taille / Modèle (optionnel)',
-      color: 'Couleur (optionnel)', material: 'Matière (optionnel)', notes: 'Défauts / Précisions (optionnel)',
+      brand: 'Marque (optionnel)', price: 'Prix (€)', size: 'Taille / Modèle',
+      color: 'Couleur', material: 'Matière (optionnel)', notes: 'Défauts / Précisions (optionnel)',
       status: 'Statut', platform: 'Plateforme cible',
-      saveProd: '💾 Enregistrer produit', generate: "✨ Générer l'annonce",
-      step3: '3. Annonce générée (modifiable)', title: 'Titre', desc: 'Description',
+      saveProd: 'Enregistrer', generate: "Générer l'annonce",
+      step3: 'Annonce prête (modifiable)', title: 'Titre', desc: 'Description',
       ebayWarn: 'Titre ajusté à 80 caractères max pour eBay.',
-      copy: '📋 Copier', share: '📲 Partager', saveAll: '💾 Sauvegarder produit + historique',
-      reset: '🔄 Nouveau produit',
+      copy: 'Copier', share: 'Partager', saveAll: 'Sauvegarder produit + historique',
+      reset: 'Nouveau produit',
       productsTitle: 'Mes produits', search: 'Rechercher produit, marque...',
       historyTitle: 'Historique des annonces',
       exportTitle: 'Exports locaux (0 €)', exportSub: 'Téléchargez vos produits et votre historique directement sur votre téléphone.',
-      expCsv: '⬇️ Exporter en CSV (Excel)', expJson: '⬇️ Exporter en JSON', expMd: '⬇️ Exporter en Markdown (.md)',
-      privTitle: '🔒 Confidentialité & Hors-ligne',
+      expCsv: 'Exporter en CSV (Excel)', expJson: 'Exporter en JSON', expMd: 'Exporter en Markdown (.md)',
+      privTitle: 'Confidentialité, CGU & Hors-ligne',
       privPoints: [
         'Stockage 100 % local sur votre téléphone (aucun compte requis).',
         'Aucune API payante ni abonnement (budget strict 0 €).',
         'Aucune donnée inventée : seuls vos champs saisis sont utilisés.',
         'Fonctionne hors-ligne grâce au Service Worker PWA.'
       ],
-      clearAll: '🗑️ Effacer toutes les données locales',
+      legalBtn: 'CGU, Mentions légales & RGPD / USA',
+      clearAll: 'Effacer toutes les données locales',
       confirmClear: 'Supprimer tous les produits et tout l’historique local ?',
       confirmDel: 'Supprimer cet élément ?',
       needName: "Veuillez saisir le nom de l'objet.",
@@ -325,35 +496,38 @@
     },
     en: {
       offlinePill: '100% Local • Private',
-      step1: '1. Photo & Free Local AI',
-      step1Hint: 'Free AI suggests the item locally (works offline once cached).',
-      pickPhoto: 'Take a photo or choose from gallery',
-      analyze: '🧠 Analyze with free AI',
-      analyzing: '⏳ Analyzing locally...',
-      aiUnavailable: 'Offline AI model not cached yet. Enter the item name below.',
+      tabs: ['1. Photo & AI', '2. Details', '3. Listing'],
+      step1: 'Photo & Free Local AI',
+      step1Hint: 'AI suggests the item locally (works offline once cached).',
+      pickPhoto: 'Take a photo or open gallery',
+      analyze: 'Analyze with free AI',
+      analyzing: 'Analyzing locally...',
+      nextDetails: 'Continue to details',
+      aiUnavailable: 'Offline AI model not cached yet. Enter item name in Details.',
       apply: 'Use',
-      step2: '2. Factual Product Details',
+      step2: 'Factual Product Details',
       name: 'Item name *', cat: 'Category', cond: 'Condition',
-      brand: 'Brand (optional)', price: 'Price (€)', size: 'Size / Model (optional)',
-      color: 'Color (optional)', material: 'Material (optional)', notes: 'Defects / Notes (optional)',
+      brand: 'Brand (optional)', price: 'Price (€)', size: 'Size / Model',
+      color: 'Color', material: 'Material (optional)', notes: 'Defects / Notes (optional)',
       status: 'Status', platform: 'Target platform',
-      saveProd: '💾 Save product', generate: '✨ Generate listing',
-      step3: '3. Generated Listing (editable)', title: 'Title', desc: 'Description',
+      saveProd: 'Save', generate: 'Generate listing',
+      step3: 'Listing ready (editable)', title: 'Title', desc: 'Description',
       ebayWarn: 'Title trimmed to 80 characters for eBay.',
-      copy: '📋 Copy', share: '📲 Share', saveAll: '💾 Save product + history',
-      reset: '🔄 New product',
+      copy: 'Copy', share: 'Share', saveAll: 'Save product + history',
+      reset: 'New product',
       productsTitle: 'My Products', search: 'Search product, brand...',
       historyTitle: 'Listing History',
       exportTitle: 'Local Exports (€0)', exportSub: 'Download your products and listing history directly to your phone.',
-      expCsv: '⬇️ Export as CSV (Excel)', expJson: '⬇️ Export as JSON', expMd: '⬇️ Export as Markdown (.md)',
-      privTitle: '🔒 Privacy & Offline',
+      expCsv: 'Export as CSV (Excel)', expJson: 'Export as JSON', expMd: 'Export as Markdown (.md)',
+      privTitle: 'Privacy, Terms & Offline',
       privPoints: [
         '100% local storage on your phone (no account required).',
         'No paid API or subscription (strict €0 budget).',
         'Zero invented specs: listings only use factual fields you enter.',
         'Works offline via PWA Service Worker.'
       ],
-      clearAll: '🗑️ Erase all local data',
+      legalBtn: 'Terms of Use, GDPR & US Privacy',
+      clearAll: 'Erase all local data',
       confirmClear: 'Delete all local products and history?',
       confirmDel: 'Delete this item?',
       needName: 'Please enter the item name.',
@@ -366,6 +540,14 @@
       statuses: { DRAFT: 'Draft', LISTED: 'Listed', SOLD: 'Sold' }
     }
   };
+
+  const PLATFORMS = [
+    { id: 'VINTED', label: 'Vinted' },
+    { id: 'LEBONCOIN', label: 'Leboncoin' },
+    { id: 'EBAY', label: 'eBay' },
+    { id: 'DEPOP', label: 'Depop' },
+    { id: 'FACEBOOK', label: 'Facebook Marketplace' }
+  ];
 
   const LABEL_RULES = [
     { keys: ['running shoe', 'sneaker', 'tennis shoe'], fr: 'Baskets / Sneakers', en: 'Sneakers', cat: 'SHOES' },
@@ -396,6 +578,50 @@
     return String(str || '').replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
   }
 
+  function copySafe(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+    }
+    fallbackCopy(text);
+    return Promise.resolve();
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+  }
+
+  function setStudioStep(step) {
+    [1, 2, 3].forEach((n) => {
+      document.getElementById('studio-step-' + n).classList.toggle('hidden', n !== step);
+      document.getElementById('step-tab-' + n).classList.toggle('active', n === step);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderStudioChips() {
+    const t = I18N[lang];
+    document.getElementById('cat-chips').innerHTML = Object.keys(t.cats).map((k) =>
+      `<span class="chip ${selectedCat === k ? 'active' : ''}" onclick="selectedCat='${k}';renderStudioChips();">${esc(t.cats[k])}</span>`
+    ).join('');
+    document.getElementById('cond-chips').innerHTML = Object.keys(t.conds).map((k) =>
+      `<span class="chip ${selectedCond === k ? 'active' : ''}" onclick="selectedCond='${k}';renderStudioChips();">${esc(t.conds[k])}</span>`
+    ).join('');
+    document.getElementById('status-chips').innerHTML = Object.keys(t.statuses).map((k) =>
+      `<span class="chip ${selectedStatus === k ? 'active' : ''}" onclick="selectedStatus='${k}';renderStudioChips();">${esc(t.statuses[k])}</span>`
+    ).join('');
+    document.getElementById('plat-chips').innerHTML = PLATFORMS.map((p) =>
+      `<span class="chip ${selectedPlatform === p.id ? 'active' : ''}" onclick="selectedPlatform='${p.id}';renderStudioChips();">${esc(p.label)}</span>`
+    ).join('');
+  }
+
   function toggleLanguage() {
     lang = lang === 'fr' ? 'en' : 'fr';
     localStorage.setItem('ss_lang', lang);
@@ -406,10 +632,12 @@
     const t = I18N[lang];
     document.getElementById('btn-lang').textContent = lang.toUpperCase();
     document.getElementById('lbl-offline-pill').textContent = t.offlinePill;
+    [1, 2, 3].forEach((n, i) => { document.getElementById('step-tab-' + n).textContent = t.tabs[i]; });
     document.getElementById('lbl-step1').textContent = t.step1;
     document.getElementById('lbl-step1-hint').textContent = t.step1Hint;
     document.getElementById('lbl-pick-photo').textContent = t.pickPhoto;
-    document.getElementById('btn-analyze').textContent = t.analyze;
+    document.getElementById('txt-analyze').textContent = t.analyze;
+    document.getElementById('txt-next-details').textContent = t.nextDetails;
     document.getElementById('lbl-step2').textContent = t.step2;
     document.getElementById('lbl-name').textContent = t.name;
     document.getElementById('lbl-cat').textContent = t.cat;
@@ -422,15 +650,15 @@
     document.getElementById('lbl-notes').textContent = t.notes;
     document.getElementById('lbl-status').textContent = t.status;
     document.getElementById('lbl-platform').textContent = t.platform;
-    document.getElementById('btn-save-prod').textContent = t.saveProd;
-    document.getElementById('btn-generate').textContent = t.generate;
+    document.getElementById('txt-save-prod').textContent = t.saveProd;
+    document.getElementById('txt-generate').textContent = t.generate;
     document.getElementById('lbl-step3').textContent = t.step3;
     document.getElementById('lbl-res-title').textContent = t.title;
     document.getElementById('lbl-res-desc').textContent = t.desc;
-    document.getElementById('btn-copy').textContent = t.copy;
-    document.getElementById('btn-share').textContent = t.share;
-    document.getElementById('btn-save-all').textContent = t.saveAll;
-    document.getElementById('btn-reset').textContent = t.reset;
+    document.getElementById('txt-copy').textContent = t.copy;
+    document.getElementById('txt-share').textContent = t.share;
+    document.getElementById('txt-save-all').textContent = t.saveAll;
+    document.getElementById('txt-reset').textContent = t.reset;
     document.getElementById('lbl-products-title').textContent = t.productsTitle;
     document.getElementById('search-products').placeholder = t.search;
     document.getElementById('lbl-history-title').textContent = t.historyTitle;
@@ -440,16 +668,14 @@
     document.getElementById('btn-exp-json').textContent = t.expJson;
     document.getElementById('btn-exp-md').textContent = t.expMd;
     document.getElementById('lbl-priv-title').textContent = t.privTitle;
+    document.getElementById('txt-legal-btn').textContent = t.legalBtn;
     document.getElementById('btn-clear-all').textContent = t.clearAll;
 
     ['studio','products','history','settings'].forEach((id, i) => {
       document.getElementById('nav-' + id).textContent = t.nav[i];
     });
-    Array.from(document.getElementById('in-cat').options).forEach((o) => { o.text = t.cats[o.value]; });
-    Array.from(document.getElementById('in-cond').options).forEach((o) => { o.text = t.conds[o.value]; });
-    Array.from(document.getElementById('in-status').options).forEach((o) => { o.text = t.statuses[o.value]; });
-
     document.getElementById('priv-list').innerHTML = t.privPoints.map((p) => `<li>${esc(p)}</li>`).join('');
+    renderStudioChips();
     renderProducts();
     renderHistory();
   }
@@ -461,6 +687,7 @@
     document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === idx));
     if (tab === 'products') renderProducts();
     if (tab === 'history') renderHistory();
+    window.scrollTo({ top: 0 });
   }
 
   function handleImageUpload(event) {
@@ -493,9 +720,10 @@
   async function analyzeImage() {
     const t = I18N[lang];
     const btn = document.getElementById('btn-analyze');
+    const txt = document.getElementById('txt-analyze');
     const box = document.getElementById('ai-suggestions');
     btn.disabled = true;
-    btn.textContent = t.analyzing;
+    txt.textContent = t.analyzing;
     box.innerHTML = '';
 
     try {
@@ -513,8 +741,9 @@
         div.innerHTML = `<span><strong>${esc(label)}</strong> <span class="muted">(${pct}%)</span></span><span style="color:var(--primary);font-weight:700;">${esc(t.apply)}</span>`;
         div.onclick = () => {
           document.getElementById('in-name').value = label;
-          if (cat) document.getElementById('in-cat').value = cat;
+          if (cat) { selectedCat = cat; renderStudioChips(); }
           toast(label);
+          setStudioStep(2);
         };
         box.appendChild(div);
       });
@@ -522,7 +751,7 @@
       box.innerHTML = `<div class="warn-text">${esc(t.aiUnavailable)}</div>`;
     } finally {
       btn.disabled = false;
-      btn.textContent = t.analyze;
+      txt.textContent = t.analyze;
     }
   }
 
@@ -530,15 +759,15 @@
     return {
       id: editingProductId || Date.now(),
       name: document.getElementById('in-name').value.trim(),
-      category: document.getElementById('in-cat').value,
-      condition: document.getElementById('in-cond').value,
+      category: selectedCat,
+      condition: selectedCond,
       brand: document.getElementById('in-brand').value.trim(),
       price: document.getElementById('in-price').value.trim(),
       size: document.getElementById('in-size').value.trim(),
       color: document.getElementById('in-color').value.trim(),
       material: document.getElementById('in-material').value.trim(),
       notes: document.getElementById('in-notes').value.trim(),
-      status: document.getElementById('in-status').value,
+      status: selectedStatus,
       photo: currentPhotoDataUrl,
       updatedAt: new Date().toISOString()
     };
@@ -547,7 +776,7 @@
   function saveProductOnly() {
     const t = I18N[lang];
     const p = readFormProduct();
-    if (!p.name) return toast(t.needName);
+    if (!p.name) { setStudioStep(2); return toast(t.needName); }
     const list = getProducts().filter((x) => x.id !== p.id);
     list.unshift(p);
     setProducts(list);
@@ -559,7 +788,7 @@
     const t = I18N[lang];
     const p = readFormProduct();
     if (!p.name) return toast(t.needName);
-    const platform = document.getElementById('in-platform').value;
+    const platform = selectedPlatform;
     const condTxt = t.conds[p.condition];
     const catTxt = t.cats[p.category];
     const isFr = lang === 'fr';
@@ -607,13 +836,12 @@
 
     document.getElementById('res-title').value = title;
     document.getElementById('res-desc').value = lines.join('\n');
-    document.getElementById('result-card').classList.remove('hidden');
-    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth' });
+    setStudioStep(3);
   }
 
   function copyListing() {
     const txt = document.getElementById('res-title').value + '\n\n' + document.getElementById('res-desc').value;
-    navigator.clipboard.writeText(txt).then(() => toast(I18N[lang].copied));
+    copySafe(txt).then(() => toast(I18N[lang].copied));
   }
 
   function shareListing() {
@@ -631,7 +859,7 @@
     const h = getHistory();
     h.unshift({
       id: Date.now(),
-      platform: document.getElementById('in-platform').value,
+      platform: selectedPlatform,
       lang,
       title: document.getElementById('res-title').value.trim(),
       desc: document.getElementById('res-desc').value.trim(),
@@ -644,14 +872,18 @@
   function resetForm() {
     editingProductId = null;
     currentPhotoDataUrl = '';
-    ['in-name','in-brand','in-price','in-size','in-color','in-material','in-notes'].forEach((id) => {
+    selectedCat = 'CLOTHING';
+    selectedCond = 'LIKE_NEW';
+    selectedStatus = 'DRAFT';
+    ['in-name','in-brand','in-price','in-size','in-color','in-material','in-notes','res-title','res-desc'].forEach((id) => {
       document.getElementById(id).value = '';
     });
     document.getElementById('image-input').value = '';
     document.getElementById('image-preview').style.display = 'none';
     document.getElementById('btn-analyze').disabled = true;
     document.getElementById('ai-suggestions').innerHTML = '';
-    document.getElementById('result-card').classList.add('hidden');
+    renderStudioChips();
+    setStudioStep(1);
   }
 
   function renderProducts() {
@@ -683,12 +915,13 @@
           ${p.photo ? `<img class="thumb" src="${p.photo}" alt="">` : ''}
           <div>
             <strong>${esc(p.name)}</strong>
-            <div class="muted">${esc([p.brand, t.cats[p.category], p.price ? p.price + ' €' : '', t.statuses[p.status]].filter(Boolean).join(' • '))}</div>
+            <div class="muted">${esc([p.brand, t.cats[p.category], p.price ? p.price + ' €' : ''].filter(Boolean).join(' • '))}</div>
+            <span class="status-badge">${esc(t.statuses[p.status || 'DRAFT'])}</span>
           </div>
         </div>
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="editProduct(${p.id})">${esc(t.edit)}</button>
-          <button class="btn btn-outline btn-sm" onclick="duplicateProduct(${p.id})">${esc(t.dup)}</button>
+          <button class="btn btn-tonal btn-sm" onclick="editProduct(${p.id})">${esc(t.edit)}</button>
+          <button class="btn btn-tonal btn-sm" onclick="duplicateProduct(${p.id})">${esc(t.dup)}</button>
           <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">${esc(t.del)}</button>
         </div>
       </div>
@@ -699,16 +932,16 @@
     const p = getProducts().find((x) => x.id === id);
     if (!p) return;
     editingProductId = p.id;
+    selectedCat = p.category || 'CLOTHING';
+    selectedCond = p.condition || 'LIKE_NEW';
+    selectedStatus = p.status || 'DRAFT';
     document.getElementById('in-name').value = p.name;
-    document.getElementById('in-cat').value = p.category;
-    document.getElementById('in-cond').value = p.condition;
     document.getElementById('in-brand').value = p.brand || '';
     document.getElementById('in-price').value = p.price || '';
     document.getElementById('in-size').value = p.size || '';
     document.getElementById('in-color').value = p.color || '';
     document.getElementById('in-material').value = p.material || '';
     document.getElementById('in-notes').value = p.notes || '';
-    document.getElementById('in-status').value = p.status || 'DRAFT';
     currentPhotoDataUrl = p.photo || '';
     const prev = document.getElementById('image-preview');
     if (currentPhotoDataUrl) {
@@ -719,7 +952,9 @@
       prev.style.display = 'none';
       document.getElementById('btn-analyze').disabled = true;
     }
+    renderStudioChips();
     switchTab('studio', 0);
+    setStudioStep(2);
   }
 
   function duplicateProduct(id) {
@@ -756,7 +991,7 @@
         <div style="font-weight:700;margin:6px 0;">${esc(h.title)}</div>
         <div style="font-size:13px;white-space:pre-wrap;color:#e2e0ec;">${esc(h.desc)}</div>
         <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="copyHist(${h.id})">${esc(t.copy)}</button>
+          <button class="btn btn-tonal btn-sm" onclick="copyHist(${h.id})">${esc(t.copy)}</button>
           <button class="btn btn-danger btn-sm" onclick="deleteHist(${h.id})">${esc(t.del)}</button>
         </div>
       </div>
@@ -766,7 +1001,7 @@
   function copyHist(id) {
     const h = getHistory().find((x) => x.id === id);
     if (!h) return;
-    navigator.clipboard.writeText(`${h.title}\n\n${h.desc}`).then(() => toast(I18N[lang].copied));
+    copySafe(`${h.title}\n\n${h.desc}`).then(() => toast(I18N[lang].copied));
   }
 
   function deleteHist(id) {
@@ -818,4 +1053,4 @@
   applyLanguage();
 </script>
 </body>
-        </html>
+</html>
