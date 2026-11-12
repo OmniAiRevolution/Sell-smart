@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#0a0520"/>
+  <rect x="28" y="28" width="456" height="456" rx="90" fill="none" stroke="#6e32ff" stroke-width="24"/>
+  <text x="256" y="235" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="96" font-weight="bold">SELL</text>
+  <text x="256" y="340" text-anchor="middle" fill="#6e32ff" font-family="sans-serif" font-size="96" font-weight="bold">SMART</text>
+</svg>
