@@ -210,6 +210,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (min-width: 600px) { main { padding-inline: 24px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 </style>
+  <link rel="stylesheet" href="./modern-ui.css">
 </head>
 <body>
 
@@ -227,6 +228,27 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 <main>
   <!-- VUE 1 : STUDIO -->
   <section id="view-studio" class="view-anim">
+<section class="v10-sell-hero" aria-labelledby="v10-sell-title">
+  <div class="v10-sell-hero-copy">
+    <div class="v10-eyebrow"><span class="v10-dot"></span> AITECHPRO / CREATOR STUDIO</div>
+    <h1 id="v10-sell-title">Vos produits. <em>Une meilleure vitrine.</em></h1>
+    <p>Une photo, des détails, une annonce prête à partager. Un studio de création local, pensé pour votre téléphone.</p>
+    <div class="v10-hero-actions">
+      <button class="v10-primary-action" type="button" onclick="setStudioStep(1)">＋ Ajouter une photo</button>
+      <button class="v10-secondary-action" type="button" onclick="setStudioStep(2)">Explorer le studio ↗</button>
+    </div>
+  </div>
+  <div class="v10-sell-preview" aria-hidden="true">
+    <div class="v10-preview-top"><span>VISUAL STUDIO</span><span class="v10-preview-dots">● ● ●</span></div>
+    <div class="v10-preview-art"></div>
+    <div class="v10-preview-meta"><div><strong>Votre prochaine annonce</strong><span style="display:block;margin-top:5px">Aperçu illustratif · aucun produit chargé</span></div><span>✦</span></div>
+  </div>
+</section>
+<div class="v10-sell-features" aria-label="Outils du studio">
+  <div class="v10-feature"><span class="v10-feature-mark" aria-hidden="true">◇</span><div><b>Photo & IA</b><small>Analyse locale</small></div></div>
+  <div class="v10-feature"><span class="v10-feature-mark" aria-hidden="true">✎</span><div><b>Annonces FR / EN</b><small>Texte prêt à adapter</small></div></div>
+  <div class="v10-feature"><span class="v10-feature-mark" aria-hidden="true">⇩</span><div><b>Exports & historique</b><small>Vos données restent locales</small></div></div>
+</div>
     <div class="stepper">
       <div class="step-tab active" id="step-tab-1" onclick="setStudioStep(1)">1. Photo &amp; IA</div>
       <div class="step-tab" id="step-tab-2" onclick="setStudioStep(2)">2. Détails</div>
