@@ -24,7 +24,7 @@ const path=require('node:path');
   await page.waitForFunction(()=>document.querySelector('#btn-analyze')&&!document.querySelector('#btn-analyze').disabled,{timeout:10000});
   verify((await page.locator('#ai-suggestions').innerText()).length>3,'AI should provide result or explicit offline fallback');
   console.log('PASS: local AI fallback with no network');
-  await page.locator('#studio-step-1 button[onclick="setStudioStep(2)"]').click();
+  await page.locator('#studio-step-1 > button[onclick="setStudioStep(2)"]').click();
   await page.locator('#in-name').fill('Objet test V10');
   await page.locator('#in-brand').fill('Marque Test');
   await page.locator('#in-price').fill('29');
