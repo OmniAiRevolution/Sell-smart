@@ -210,6 +210,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (min-width: 600px) { main { padding-inline: 24px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 </style>
+  <link rel="stylesheet" href="./modern-ui.css">
+  <link rel="stylesheet" href="./spatial-ui.css">
 </head>
 <body>
 
@@ -227,6 +229,29 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 <main>
   <!-- VUE 1 : STUDIO -->
   <section id="view-studio" class="view-anim">
+<section class="v10-sell-hero" aria-labelledby="v10-sell-title">
+  <canvas id="spatial-canvas" aria-hidden="true"></canvas>
+  <div class="v10-sell-hero-copy">
+    <div class="v10-eyebrow"><span class="v10-dot"></span> AITECHPRO / CREATOR STUDIO</div>
+    <h1 id="v10-sell-title">Vos produits. <em>Une meilleure vitrine.</em></h1>
+    <p>Une photo, des détails, une annonce prête à partager. Un studio de création local, pensé pour votre téléphone.</p>
+    <div class="v10-hero-actions">
+      <button class="v10-primary-action" type="button" onclick="setStudioStep(1)">＋ Ajouter une photo</button>
+      <button class="v10-secondary-action" type="button" onclick="setStudioStep(2)">Explorer le studio ↗</button>
+      <button class="v10-secondary-action v10-motion-toggle" type="button" id="v10-motion-toggle" hidden>Activer le gyroscope</button>
+    </div>
+  </div>
+  <div class="v10-sell-preview" aria-hidden="true">
+    <div class="v10-preview-top"><span>VISUAL STUDIO</span><span class="v10-preview-dots">● ● ●</span></div>
+    <div class="v10-preview-art"></div>
+    <div class="v10-preview-meta"><div><strong>Votre prochaine annonce</strong><span style="display:block;margin-top:5px">Aperçu illustratif · aucun produit chargé</span></div><span>✦</span></div>
+  </div>
+</section>
+<div class="v10-sell-features" aria-label="Outils du studio">
+  <div class="v10-feature"><span class="v10-feature-mark" aria-hidden="true">◇</span><div><b>Photo & IA</b><small>Analyse locale</small></div></div>
+  <div class="v10-feature"><span class="v10-feature-mark" aria-hidden="true">✎</span><div><b>Annonces FR / EN</b><small>Texte prêt à adapter</small></div></div>
+  <div class="v10-feature"><span class="v10-feature-mark" aria-hidden="true">⇩</span><div><b>Exports & historique</b><small>Vos données restent locales</small></div></div>
+</div>
     <div class="stepper">
       <div class="step-tab active" id="step-tab-1" onclick="setStudioStep(1)">1. Photo &amp; IA</div>
       <div class="step-tab" id="step-tab-2" onclick="setStudioStep(2)">2. Détails</div>
@@ -235,7 +260,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
     <!-- ÉTAPE 1 -->
     <div id="studio-step-1" class="view-anim">
-      <div class="card">
+      <div class="card glass-card-3d">
         <div class="card-title" id="lbl-step1">Photo &amp; IA locale gratuite</div>
         <div class="muted" id="lbl-step1-hint">L'IA suggère l'objet sans envoyer vos photos sur un serveur payant.</div>
 
@@ -265,7 +290,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
     <!-- ÉTAPE 2 -->
     <div id="studio-step-2" class="view-anim hidden">
-      <div class="card">
+      <div class="card glass-card-3d">
         <div class="card-title" id="lbl-step2">Informations réelles du produit</div>
 
         <div class="field" style="margin-top:12px;">
@@ -338,7 +363,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
     <!-- ÉTAPE 3 -->
     <div id="studio-step-3" class="view-anim hidden">
-      <div class="card">
+      <div class="card glass-card-3d">
         <div class="card-title" style="color:var(--ok);" id="lbl-step3">Annonce prête (modifiable)</div>
         <div id="ebay-warn" class="warn-text hidden"></div>
 
@@ -375,7 +400,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
   <!-- VUE 2 : PRODUITS -->
   <section id="view-products" class="view-anim hidden">
-    <div class="card">
+    <div class="card glass-card-3d">
       <div class="card-title" id="lbl-products-title">Mes produits</div>
       <div class="field" style="margin-top:10px;">
         <input type="text" id="search-products" oninput="renderProducts()" placeholder="Rechercher...">
@@ -388,7 +413,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
   <!-- VUE 3 : HISTORIQUE -->
   <section id="view-history" class="view-anim hidden">
-    <div class="card">
+    <div class="card glass-card-3d">
       <div class="card-title" id="lbl-history-title">Historique des annonces</div>
       <div class="chips" id="platform-filters" style="margin-top:10px;"></div>
     </div>
@@ -397,7 +422,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
   <!-- VUE 4 : EXPORTS & CONFIDENTIALITÉ -->
   <section id="view-settings" class="view-anim hidden">
-    <div class="card">
+    <div class="card glass-card-3d">
       <div class="card-title" id="lbl-export-title">Exports locaux (0 €)</div>
       <div class="muted" id="lbl-export-sub">Téléchargez vos produits et votre historique directement sur votre téléphone.</div>
       <button class="btn" id="btn-exp-csv" onclick="exportData('csv')">Exporter en CSV (Excel)</button>
@@ -405,7 +430,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       <button class="btn btn-tonal" id="btn-exp-md" onclick="exportData('md')">Exporter en Markdown (.md)</button>
     </div>
 
-    <div class="card">
+    <div class="card glass-card-3d">
       <div class="card-title" id="lbl-priv-title">Confidentialité, CGU &amp; Hors-ligne</div>
       <ul id="priv-list" class="muted" style="padding-left:18px; line-height:1.6; margin-top:8px;"></ul>
       <a class="btn btn-tonal" href="./legal.html" style="margin-top:12px;">
@@ -414,13 +439,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       </a>
     </div>
 
-    <div class="card">
+    <div class="card glass-card-3d">
       <button class="btn btn-danger" id="btn-clear-all" onclick="clearAllData()">Effacer toutes les données locales</button>
     </div>
   </section>
 </main>
 
-<nav>
+<nav class="floating-dock">
   <div class="nav-item active" onclick="switchTab('studio', 0)">
     <div class="nav-pill"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-5.1 3.7L16.8 20 12 16.5 7.2 20l1.9-5.6L4 10.7l6.1-1.9z"/></svg></div>
     <span id="nav-studio">Studio</span>
@@ -1062,5 +1087,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
   applyLanguage();
 </script>
+<script src="./spatial-ui.js" defer></script>
 </body>
 </html>

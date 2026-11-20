@@ -1,0 +1,81 @@
+/* AITECHPRO V10 Modern UI — separate presentation layer. No behavior or data changes. */
+:root{--v10-ink:#f9f8ff;--v10-soft:#bfb8d9;--v10-line:rgba(205,183,255,.18);--v10-purple:#9e6aff;--v10-pink:#e78aff;--v10-deep:#0a0717}
+html,body{background:#090615;color:var(--v10-ink)}
+body{background-image:radial-gradient(ellipse 65% 36% at 85% -10%,rgba(135,69,249,.2),transparent 72%),radial-gradient(ellipse 55% 28% at 0 55%,rgba(86,51,201,.09),transparent 75%)}
+header{background:rgba(10,7,22,.88);border-bottom:1px solid var(--v10-line);padding:17px clamp(18px,3vw,40px);min-height:80px}
+.brand-title{font-size:clamp(20px,2vw,25px);letter-spacing:-.055em;font-weight:900}
+.brand-title span{color:#b68bff}
+.brand-sub{font-size:11px;letter-spacing:.045em}
+.lang-btn{border-radius:13px;background:linear-gradient(135deg,#29203f,#1b1531);border-color:rgba(188,164,255,.3);padding:12px 16px}
+main{max-width:1180px;padding:26px clamp(16px,3vw,40px) 56px}
+#view-studio,#view-products,#view-history,#view-settings{width:100%;min-width:0}
+.v10-sell-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(250px,.8fr);align-items:center;gap:28px;min-height:344px;padding:clamp(25px,4vw,48px);background:linear-gradient(117deg,#251547 2%,#17102c 48%,#100c20 100%);border:1px solid rgba(189,152,255,.3);border-radius:30px;box-shadow:0 24px 90px rgba(19,8,48,.42),inset 0 1px rgba(255,255,255,.09);margin-bottom:18px}
+.v10-sell-hero:before{content:"";position:absolute;width:430px;height:430px;right:-145px;top:-185px;border-radius:50%;background:radial-gradient(circle,rgba(157,89,252,.38),transparent 68%);pointer-events:none}
+.v10-sell-hero:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(90deg,transparent,#000);pointer-events:none}
+.v10-sell-hero-copy,.v10-sell-preview{position:relative;z-index:1}
+.v10-eyebrow{display:inline-flex;gap:9px;align-items:center;padding:8px 12px;border-radius:30px;border:1px solid rgba(195,165,255,.3);background:rgba(158,106,255,.12);color:#e1caff;font-size:10px;letter-spacing:.15em;font-weight:800}
+.v10-eyebrow .v10-dot{height:8px;width:8px;border-radius:50%;background:#9dffbc;box-shadow:0 0 12px #6efca9}
+.v10-sell-hero h1{font-size:clamp(30px,4vw,53px);letter-spacing:-.065em;line-height:1.07;margin:19px 0 14px;font-weight:900;max-width:600px}
+.v10-sell-hero h1 em{font-style:normal;background:linear-gradient(90deg,#c99bff,#f29bd6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.v10-sell-hero p{font-size:clamp(13px,1.35vw,15px);line-height:1.7;color:#c6badf;max-width:485px;margin:0 0 24px}
+.v10-hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.v10-primary-action,.v10-secondary-action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:46px;padding:12px 20px;border-radius:13px;font-size:13px;font-weight:800;cursor:pointer;transition:transform .2s,border .2s;background:transparent;color:#fff}
+.v10-primary-action{background:linear-gradient(130deg,#9557ff,#bc77ff);box-shadow:0 10px 27px rgba(145,89,255,.32);border:1px solid rgba(255,255,255,.17)}
+.v10-secondary-action{border:1px solid rgba(190,163,255,.28);background:rgba(255,255,255,.055)}
+.v10-primary-action:active,.v10-secondary-action:active{transform:scale(.97)}
+.v10-sell-preview{min-height:236px;max-width:345px;justify-self:end;width:100%;padding:18px;border-radius:22px;border:1px solid rgba(219,199,255,.23);background:linear-gradient(145deg,rgba(53,37,92,.96),rgba(24,18,45,.96));box-shadow:0 30px 50px rgba(0,0,0,.3);transform:rotate(2deg)}
+.v10-preview-top{display:flex;justify-content:space-between;color:#bfb4d6;font-size:10px;font-weight:800;letter-spacing:.12em}
+.v10-preview-dots{color:#ce93ff;letter-spacing:.1em}
+.v10-preview-art{height:125px;margin:14px 0 12px;border-radius:13px;background:radial-gradient(circle at 70% 20%,rgba(205,152,255,.65),transparent 42%),linear-gradient(135deg,#503482,#201639);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.v10-preview-art:before{content:"";width:83px;height:83px;border-radius:26px;transform:rotate(-18deg);background:linear-gradient(140deg,#c1a4ff,#744ae5);box-shadow:16px 12px 32px rgba(0,0,0,.35),inset 6px 6px 10px rgba(255,255,255,.25)}
+.v10-preview-art:after{content:"";position:absolute;width:40px;height:40px;border-radius:13px;border:3px solid rgba(255,255,255,.5);transform:rotate(20deg) translate(38px,6px)}
+.v10-preview-meta{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.v10-preview-meta strong{font-size:13px;font-weight:800;letter-spacing:-.015em}
+.v10-preview-meta span{font-size:10px;color:#c5b9de}
+.v10-sell-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.v10-feature{display:flex;align-items:center;gap:12px;padding:18px;border:1px solid var(--v10-line);border-radius:19px;background:linear-gradient(150deg,rgba(36,26,61,.94),rgba(20,15,36,.94))}
+.v10-feature-mark{min-width:42px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(166,109,255,.15);color:#d0adff;font-size:20px}
+.v10-feature b{display:block;font-size:13px;line-height:1.4}
+.v10-feature small{display:block;color:#aca1c6;font-size:10px;margin-top:3px}
+.stepper{padding:6px;background:#161026;border-color:rgba(194,164,254,.22);border-radius:18px;gap:6px;margin:18px 0}
+.step-tab{border-radius:13px;font-size:13px;min-height:52px;font-weight:750}
+.step-tab.active{background:linear-gradient(110deg,#8955ea,#a36bf0);box-shadow:0 6px 20px rgba(138,88,239,.28)}
+.card{background:linear-gradient(150deg,rgba(32,23,53,.98),rgba(17,13,31,.98));border:1px solid rgba(195,165,255,.18);border-radius:23px;padding:clamp(18px,2.6vw,28px);box-shadow:0 16px 45px rgba(0,0,0,.19)}
+.card-title{font-size:clamp(17px,1.8vw,22px);letter-spacing:-.025em}
+.muted,.field-label{color:#beb2d3}
+.photo-box{min-height:200px;border-radius:20px;border:1.5px dashed rgba(189,152,255,.58);background:linear-gradient(145deg,rgba(151,93,255,.105),rgba(91,63,167,.04));display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+.photo-icon-wrap{width:62px;height:62px;border-radius:19px;background:rgba(160,109,255,.2)}
+input,textarea,select{background:rgba(8,6,19,.63);border-color:rgba(206,185,255,.23);border-radius:13px}
+.btn{border-radius:14px;min-height:48px}
+.chip{border-radius:11px;padding:10px 14px}
+nav{background:rgba(12,9,27,.97);border-top:1px solid rgba(203,174,255,.2);padding:10px 8px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -14px 32px rgba(0,0,0,.22)}
+.nav-item{gap:5px;font-size:11px}
+.nav-pill{min-width:55px;min-height:36px;border-radius:13px}
+.nav-item.active .nav-pill{background:rgba(169,104,255,.25);color:#dcbcff}
+@media(min-width:1000px){
+ body{padding-left:232px;padding-bottom:0}
+ header{padding:18px 38px}
+ main{padding:30px clamp(24px,3vw,48px) 70px;margin:0 auto}
+ nav{left:0;top:0;bottom:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:10px;padding:110px 14px 30px;background:linear-gradient(180deg,#151026,#0b0919);border-top:0;border-right:1px solid var(--v10-line);box-shadow:none}
+ nav:before{content:"AITECHPRO  /  WORKSPACE";position:absolute;top:38px;left:18px;right:12px;font-weight:900;font-size:11px;letter-spacing:.12em;color:#c7abe9;line-height:1.7}
+ nav .nav-item{flex:0;display:flex;flex-direction:row;justify-content:flex-start;gap:13px;padding:11px 12px;border-radius:14px;min-height:57px;font-size:13px}
+ nav .nav-item.active{background:rgba(152,100,255,.17)}
+ nav .nav-pill{min-width:38px;padding:5px}
+ #toast{bottom:30px}
+}
+@media(max-width:740px){
+ main{padding:18px 14px 30px}
+ .v10-sell-hero{grid-template-columns:1fr;gap:19px;min-height:0;padding:26px 23px;border-radius:24px}
+ .v10-sell-hero h1{font-size:clamp(30px,8vw,42px)}
+ .v10-sell-preview{justify-self:stretch;max-width:none;transform:none;min-height:192px}
+ .v10-preview-art{height:102px}
+ .v10-sell-features{grid-template-columns:1fr 1fr;gap:9px}
+ .v10-feature{padding:12px;gap:9px;border-radius:15px}
+ .v10-feature:last-child{grid-column:1/-1}
+ .v10-feature-mark{width:34px;height:34px;min-width:34px;font-size:16px}
+ .v10-feature b{font-size:11px}
+ .v10-feature small{font-size:9px}
+ .step-tab{font-size:10px;padding:8px 3px}
+ .row{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){.v10-sell-preview{transform:none}}
